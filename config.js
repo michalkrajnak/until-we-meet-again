@@ -41,7 +41,7 @@ window.REUNION_CONFIG = {
 
   // Slideshow settings
   slideshow: {
-    intervalMs: 6500,
+    intervalMs: 3500,
     shuffleOnLoad: true,
   },
 

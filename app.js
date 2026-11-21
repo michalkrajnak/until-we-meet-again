@@ -355,14 +355,16 @@
     return found ? found.label : catId;
   }
 
-  function getPhotoCaption(photo) {
+  function getCustomCaption(photo) {
     const fileName = photo.src.split('/').pop();
     const override = config.photoCaptions && config.photoCaptions[fileName];
-    if (override) {
-      if (typeof override === 'string') return override;
-      return override[currentLang] || override.cs || override.en || '';
-    }
-    return t().defaultCaptions[photo.category] || photo.caption || getCategoryLabel(photo.category);
+    if (!override) return '';
+    if (typeof override === 'string') return override;
+    return override[currentLang] || override.cs || override.en || '';
+  }
+
+  function getPhotoCaption(photo) {
+    return getCustomCaption(photo) || getCategoryLabel(photo.category);
   }
 
   function renderCategoryFilters() {
@@ -487,12 +489,13 @@
     if (!photo) return;
     const isVideo = photo.type === 'video';
     const categoryName = getCategoryLabel(photo.category);
-    const caption = getPhotoCaption(photo);
+    const customCaption = getCustomCaption(photo);
     el.slideBadge.textContent = isVideo ? `${categoryName} · ${t().videoTag}` : categoryName;
-    el.slideCaption.textContent = caption;
-    el.slideImage.alt = caption;
+    el.slideCaption.textContent = customCaption;
+    el.slideCaption.hidden = !customCaption;
+    el.slideImage.alt = customCaption || categoryName;
     if (el.lightboxDialog.open) {
-      el.lightboxCaption.textContent = caption;
+      el.lightboxCaption.textContent = customCaption || categoryName;
     }
   }
 
