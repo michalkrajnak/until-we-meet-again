@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Simča and Ria — Czechoslovakian Wolfdog and Australian Shepherd mix">
+  <defs>
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05101e"/>
+      <stop offset="55%" stop-color="#0a2538"/>
+      <stop offset="100%" stop-color="#0b192d"/>
+    </linearGradient>
+    <linearGradient id="aur3" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0%" stop-color="#34f5b5" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#34f5b5" stop-opacity="0.7"/>
+      <stop offset="75%" stop-color="#22d3ee" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur3"><feGaussianBlur stdDeviation="22"/></filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky3)"/>
+  <path d="M-30 245 C220 90, 480 265, 760 140 C940 60, 1080 180, 1230 115 L1230 295 C1030 355, 890 220, 720 310 C450 430, 210 260, -30 385 Z" fill="url(#aur3)" filter="url(#blur3)"/>
+
+  <!-- Moon -->
+  <circle cx="940" cy="155" r="46" fill="#e0f2fe" opacity="0.9"/>
+  <circle cx="956" cy="145" r="42" fill="#081b2e"/>
+
+  <!-- Snowy ridge -->
+  <path d="M0 570 Q330 510 660 565 T1200 540 L1200 750 L0 750 Z" fill="#081529"/>
+
+  <!-- Simča + Ria (wolfish upright ears + fluffy Aussie chest/tail silhouette) -->
+  <g fill="#040a16">
+    <!-- Simča kneeling/standing beside Ria -->
+    <circle cx="535" cy="482" r="22"/>
+    <path d="M510 512 C515 501, 555 501, 560 512 L572 608 L498 608 Z"/>
+
+    <!-- Ria sitting proudly looking up -->
+    <!-- Head & wolfdog pointed ears -->
+    <polygon points="622,492 630,456 644,486"/>
+    <polygon points="646,488 662,456 668,494"/>
+    <ellipse cx="645" cy="505" rx="22" ry="18"/>
+    <polygon points="658,500 684,507 660,518"/>
+    <!-- Fluffy Aussie ruff & body -->
+    <path d="M624 518 C610 538, 608 575, 622 606 L672 606 C676 570, 670 535, 656 518 Z"/>
+    <!-- Fluffy sweeping tail -->
+    <path d="M618 594 Q585 588 576 562 Q595 574 620 578 Z"/>
+  </g>
+
+  <!-- Subtle paw accents -->
+  <g fill="#34f5b5" opacity="0.45">
+    <circle cx="385" cy="600" r="5"/><circle cx="398" cy="593" r="4.5"/><circle cx="411" cy="599" r="5"/>
+    <ellipse cx="398" cy="610" rx="8" ry="6"/>
+  </g>
+
+  <g font-family="'Plus Jakarta Sans', sans-serif" text-anchor="middle">
+    <text x="600" y="672" fill="#a7f3d0" font-size="18" letter-spacing="5" font-weight="600">SIMČA &amp; RIA · ČSV × AUSTRALIAN SHEPHERD</text>
+    <text x="600" y="704" fill="#cbd5e1" font-size="15" opacity="0.75">Add photos with Ria &amp; Texas to photos/dogs/</text>
+  </g>
+</svg>

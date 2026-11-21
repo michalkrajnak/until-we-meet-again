@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Simča and Texas — German Shepherd">
+  <defs>
+    <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#070c1c"/>
+      <stop offset="55%" stop-color="#131c39"/>
+      <stop offset="100%" stop-color="#0c182c"/>
+    </linearGradient>
+    <linearGradient id="aur4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#a78bfa" stop-opacity="0.65"/>
+      <stop offset="68%" stop-color="#34f5b5" stop-opacity="0.58"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="warm4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#fbbf24" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur4"><feGaussianBlur stdDeviation="24"/></filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky4)"/>
+  <path d="M-40 250 C210 130, 470 290, 730 160 C920 65, 1080 200, 1240 120 L1240 310 C1050 370, 900 245, 700 335 C460 440, 220 285, -40 390 Z" fill="url(#aur4)" filter="url(#blur4)"/>
+
+  <!-- Stars -->
+  <g fill="#f1f5f9" opacity="0.72">
+    <circle cx="190" cy="105" r="1.9"/><circle cx="340" cy="135" r="1.4"/><circle cx="510" cy="85" r="2.1"/>
+    <circle cx="670" cy="120" r="1.6"/><circle cx="860" cy="95" r="2"/><circle cx="1030" cy="145" r="1.5"/>
+  </g>
+
+  <!-- Snow hill -->
+  <path d="M0 570 Q360 520 720 565 T1200 545 L1200 750 L0 750 Z" fill="#081326"/>
+
+  <circle cx="600" cy="540" r="150" fill="url(#warm4)"/>
+
+  <!-- Simča + Texas (tall German Shepherd ears & strong noble posture) -->
+  <g fill="#050a16">
+    <!-- Simča -->
+    <circle cx="660" cy="480" r="22"/>
+    <path d="M635 510 C640 499, 680 499, 685 510 L696 608 L624 608 Z"/>
+
+    <!-- Texas (German Shepherd sitting alert & loyal) -->
+    <!-- Tall pointed GSD ears -->
+    <polygon points="534,480 541,436 558,476"/>
+    <polygon points="560,478 577,438 584,482"/>
+    <!-- Strong muzzle & head -->
+    <ellipse cx="560" cy="496" rx="24" ry="19"/>
+    <polygon points="520,498 545,488 545,510"/>
+    <!-- Deep chest & strong back -->
+    <path d="M538 512 C532 544, 536 578, 542 608 L602 608 C606 568, 594 528, 578 510 Z"/>
+    <!-- Bushy low GSD tail -->
+    <path d="M598 598 Q620 606 626 588 Q610 590 596 584 Z"/>
+  </g>
+
+  <g font-family="'Plus Jakarta Sans', sans-serif" text-anchor="middle">
+    <text x="600" y="672" fill="#ddd6fe" font-size="18" letter-spacing="5" font-weight="600">SIMČA &amp; TEXAS · GERMAN SHEPHERD</text>
+    <text x="600" y="704" fill="#cbd5e1" font-size="15" opacity="0.75">Add photos with Texas &amp; Ria to photos/dogs/</text>
+  </g>
+</svg>

@@ -1,0 +1,3 @@
+.DS_Store
+# Raw high-resolution originals stay local; web-optimized assets live in media/
+photos/

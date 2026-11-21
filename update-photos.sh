@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Scans photos/{simca,us,dogs,horses}, converts & optimizes images (including .HEIC -> .jpg)
+# and videos (.mp4/.mov) into web-ready assets inside media/, generates fast thumbnails,
+# and regenerates photos-data.js. Original files in photos/ stay untouched.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+OUT_FILE="$SCRIPT_DIR/photos-data.js"
+MEDIA_DIR="$SCRIPT_DIR/media"
+THUMBS_DIR="$MEDIA_DIR/thumbs"
+FORCE_REBUILD=0
+if [ "${1:-}" = "--force" ]; then
+  FORCE_REBUILD=1
+fi
+
+MAX_IMAGE_DIM=1600
+IMAGE_QUALITY=82
+THUMB_DIM=280
+THUMB_QUALITY=76
+VIDEO_COMPRESS_THRESHOLD_BYTES=$((8 * 1024 * 1024))
+
+TMP_DIR="$(mktemp -d)"
+TMP_ENTRIES="$TMP_DIR/entries.js"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+escape_js() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\'/\\\'}"
+  printf '%s' "$s"
+}
+
+optimize_image() {
+  local src="$1"
+  local dst="$2"
+  local thumb="$3"
+
+  mkdir -p "$(dirname "$dst")" "$(dirname "$thumb")"
+
+  if [ "$FORCE_REBUILD" -eq 1 ] || [ ! -f "$dst" ] || [ "$src" -nt "$dst" ]; then
+    sips -s format jpeg -s formatOptions "$IMAGE_QUALITY" -Z "$MAX_IMAGE_DIM" "$src" --out "$dst" >/dev/null 2>&1
+  fi
+
+  if [ "$FORCE_REBUILD" -eq 1 ] || [ ! -f "$thumb" ] || [ "$src" -nt "$thumb" ]; then
+    sips -s format jpeg -s formatOptions "$THUMB_QUALITY" -Z "$THUMB_DIM" "$dst" --out "$thumb" >/dev/null 2>&1
+  fi
+}
+
+optimize_video() {
+  local src="$1"
+  local dst="$2"
+  local thumb="$3"
+
+  mkdir -p "$(dirname "$dst")" "$(dirname "$thumb")"
+
+  if [ "$FORCE_REBUILD" -eq 1 ] || [ ! -f "$dst" ] || [ "$src" -nt "$dst" ]; then
+    local size_bytes
+    size_bytes="$(stat -f%z "$src" 2>/dev/null || wc -c < "$src")"
+
+    if [ "$size_bytes" -gt "$VIDEO_COMPRESS_THRESHOLD_BYTES" ] && command -v avconvert >/dev/null 2>&1; then
+      rm -f "$dst"
+      if ! avconvert --preset Preset1280x720 --source "$src" --output "$dst" --fileType mp4 >/dev/null 2>&1; then
+        cp "$src" "$dst"
+      fi
+    else
+      cp "$src" "$dst"
+    fi
+  fi
+
+  if [ "$FORCE_REBUILD" -eq 1 ] || [ ! -f "$thumb" ] || [ "$src" -nt "$thumb" ]; then
+    local ql_tmp="$TMP_DIR/ql"
+    mkdir -p "$ql_tmp"
+    rm -f "$ql_tmp"/*
+    if command -v qlmanage >/dev/null 2>&1 && qlmanage -t -s 640 -o "$ql_tmp" "$src" >/dev/null 2>&1; then
+      local generated_png
+      generated_png="$(find "$ql_tmp" -maxdepth 1 -type f -name '*.png' | head -n 1 || true)"
+      if [ -n "$generated_png" ]; then
+        sips -s format jpeg -s formatOptions "$THUMB_QUALITY" -Z "$THUMB_DIM" "$generated_png" --out "$thumb" >/dev/null 2>&1
+      fi
+    fi
+  fi
+}
+
+collect_category() {
+  local dir_name="$1"
+  local category_id="$2"
+  local default_caption="$3"
+  local full_dir="$SCRIPT_DIR/photos/$dir_name"
+
+  [ -d "$full_dir" ] || return 0
+
+  while IFS= read -r -d '' file; do
+    local base stem ext lower_ext
+    base="$(basename "$file")"
+    stem="${base%.*}"
+    ext="${base##*.}"
+    lower_ext="$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')"
+
+    local rel_src rel_thumb item_type
+    case "$lower_ext" in
+      jpg|jpeg|png|webp|avif|heic|gif)
+        item_type="image"
+        rel_src="media/$dir_name/$stem.jpg"
+        rel_thumb="media/thumbs/$dir_name/$stem.jpg"
+        optimize_image "$file" "$SCRIPT_DIR/$rel_src" "$SCRIPT_DIR/$rel_thumb"
+        ;;
+      mp4|mov|m4v)
+        item_type="video"
+        rel_src="media/$dir_name/$stem.mp4"
+        rel_thumb="media/thumbs/$dir_name/${stem}__video.jpg"
+        optimize_video "$file" "$SCRIPT_DIR/$rel_src" "$SCRIPT_DIR/$rel_thumb"
+        if [ ! -f "$SCRIPT_DIR/$rel_thumb" ]; then
+          rel_thumb=""
+        fi
+        ;;
+      *)
+        continue
+        ;;
+    esac
+
+    local src_escaped thumb_escaped cap_escaped
+    src_escaped="$(escape_js "$rel_src")"
+    thumb_escaped="$(escape_js "$rel_thumb")"
+    cap_escaped="$(escape_js "$default_caption")"
+
+    printf "  {\n"
+    printf "    src: '%s',\n" "$src_escaped"
+    if [ -n "$thumb_escaped" ]; then
+      printf "    thumb: '%s',\n" "$thumb_escaped"
+    fi
+    printf "    type: '%s',\n" "$item_type"
+    printf "    category: '%s',\n" "$category_id"
+    printf "    caption: '%s',\n" "$cap_escaped"
+    printf "  },\n"
+  done < <(
+    find "$full_dir" -maxdepth 1 -type f \
+      \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.avif' -o -iname '*.heic' -o -iname '*.gif' -o -iname '*.mp4' -o -iname '*.mov' -o -iname '*.m4v' \) \
+      -print0 | sort -z
+  )
+}
+
+{
+  collect_category "simca" "simca" "Simča"
+  collect_category "us" "us" "Simča & Mišák"
+  collect_category "dogs" "dogs" "Simča with Ria & Texas"
+  collect_category "horses" "horses" "Bony E & Gorny"
+} > "$TMP_ENTRIES"
+
+COUNT="$(grep -c "src:" "$TMP_ENTRIES" || true)"
+
+if [ "$COUNT" -eq 0 ]; then
+  echo "No real photos or videos found in photos/simca, photos/us, photos/dogs, or photos/horses."
+  echo "Keeping existing photos-data.js untouched."
+  exit 0
+fi
+
+{
+  cat <<'HEADER'
+/**
+ * Auto-generated by ./update-photos.sh
+ * Optimized media lives in media/ (originals in photos/ remain untouched).
+ * Custom captions per filename can be set in config.js -> photoCaptions.
+ */
+window.REUNION_PHOTOS = [
+HEADER
+  cat "$TMP_ENTRIES"
+  printf "];\n"
+} > "$OUT_FILE"
+
+echo "Updated photos-data.js with $COUNT optimized item(s) in media/."

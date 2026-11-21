@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050a14" />
+  <title>Odpočet do shledání — Simčin vánoční odpočet</title>
+  <meta name="description" content="Odpočítáváme každý den, hodinu, minutu a sekundu, než se Simča, Ria a Texas vrátí z Oulu domů na Vánoce." />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="config.js"></script>
+  <script defer src="photos-data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <!-- Atmospheric Nordic Aurora & Snow Background -->
+  <div class="sky-backdrop" aria-hidden="true">
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+    <canvas id="snow-canvas" class="snow-canvas"></canvas>
+    <div class="horizon-glow"></div>
+  </div>
+
+  <!-- Top Utility Bar -->
+  <header class="top-bar">
+    <div class="route-pill">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <span id="route-origin">Oulu, Finsko 🇫🇮</span>
+      <span class="route-arrow" aria-hidden="true">→</span>
+      <span id="route-home">Domů na Vánoce 🎄</span>
+    </div>
+
+    <div class="top-controls">
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button id="lang-cs" class="lang-btn is-active" type="button" data-lang="cs" aria-pressed="true">CZ</button>
+        <button id="lang-en" class="lang-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+
+      <button id="motion-toggle" class="icon-pill" type="button" aria-pressed="false" title="Přepnout animaci polární záře a sněžení">
+        <span class="motion-icon" aria-hidden="true">❄</span>
+        <span class="motion-label">Polární záře</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- Hero & Live Countdown -->
+    <section class="hero" aria-labelledby="page-title">
+      <p id="hero-eyebrow" class="eyebrow">Erasmus 2026 · Oulu → Domů</p>
+      <h1 id="page-title" class="hero-title">Odpočet do shledání</h1>
+      <p id="hero-subtitle" class="hero-subtitle">
+        Odpočítáváme každou vteřinu, než se Simča, Ria a Texas vrátí z Oulu domů na Vánoce.
+      </p>
+
+      <!-- Live Countdown Panel -->
+      <div id="countdown-card" class="glass-card countdown-card">
+        <div id="countdown-grid" class="countdown-grid" aria-label="Odpočet do shledání">
+          <div class="time-unit">
+            <span id="cd-days" class="time-value">00</span>
+            <span id="cd-days-label" class="time-label">Dní</span>
+          </div>
+          <span class="time-sep" aria-hidden="true">:</span>
+          <div class="time-unit">
+            <span id="cd-hours" class="time-value">00</span>
+            <span id="cd-hours-label" class="time-label">Hodin</span>
+          </div>
+          <span class="time-sep" aria-hidden="true">:</span>
+          <div class="time-unit">
+            <span id="cd-minutes" class="time-value">00</span>
+            <span id="cd-minutes-label" class="time-label">Minut</span>
+          </div>
+          <span class="time-sep" aria-hidden="true">:</span>
+          <div class="time-unit time-unit-seconds">
+            <span id="cd-seconds" class="time-value">00</span>
+            <span id="cd-seconds-label" class="time-label">Sekund</span>
+          </div>
+        </div>
+
+        <!-- Celebration State (hidden until Dec 24 12:00 or ?preview=reunion) -->
+        <div id="celebration-panel" class="celebration-panel" hidden>
+          <span class="celebration-badge" id="celebration-badge">Štědrý den · Konečně spolu</span>
+          <h2 class="celebration-heading" id="celebration-heading">Vítejte doma, Simčo, Rio a Texasi!</h2>
+          <p class="celebration-message" id="celebration-message"></p>
+        </div>
+
+        <div class="target-meta">
+          <span class="target-chip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span id="target-date-text">24. prosince 2026 · 12:00</span>
+          </span>
+
+          <div class="live-clocks" aria-label="Aktuální čas">
+            <span class="clock-chip">
+              <span id="clock-oulu-label" class="clock-city">Oulu</span>
+              <strong id="clock-oulu" class="clock-time">--:--</strong>
+            </span>
+            <span class="clock-divider" aria-hidden="true">·</span>
+            <span class="clock-chip">
+              <span id="clock-home-label" class="clock-city">Doma</span>
+              <strong id="clock-home" class="clock-time">--:--</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Erasmus Journey Progress -->
+      <div class="glass-card progress-card" aria-labelledby="progress-heading">
+        <div class="progress-header">
+          <div>
+            <h2 id="progress-heading" class="section-kicker">Průběh Erasmu</h2>
+            <p id="progress-summary" class="progress-summary">Počítám cestu…</p>
+          </div>
+          <div class="progress-percent-wrap">
+            <span id="progress-percent" class="progress-percent">0.0%</span>
+            <span id="progress-percent-label" class="progress-percent-label">hotovo</span>
+          </div>
+        </div>
+
+        <div class="journey-track-wrap">
+          <div
+            id="progress-bar"
+            class="journey-track"
+            role="progressbar"
+            aria-label="Průběh Erasmu"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div id="progress-fill" class="journey-fill" style="width: 0%"></div>
+            <div id="progress-marker" class="journey-marker" style="left: 0%" aria-hidden="true">
+              <span class="marker-glow"></span>
+              <span class="marker-icon">✈</span>
+            </div>
+          </div>
+          <div id="progress-milestones" class="journey-milestones" aria-hidden="true"></div>
+        </div>
+
+        <div class="journey-endpoints">
+          <span id="progress-start-endpoint">18. srpna · Oulu 🇫🇮</span>
+          <span id="days-stat" class="days-stat"></span>
+          <span id="progress-end-endpoint">24. prosince, 12:00 · Domů 🎄</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo Showcase -->
+    <section class="gallery-section" aria-labelledby="gallery-heading">
+      <div class="gallery-header">
+        <div>
+          <p id="gallery-kicker" class="section-kicker">Vzpomínky &amp; naše smečka</p>
+          <h2 id="gallery-heading" class="section-title">Naše oblíbené společné chvíle</h2>
+        </div>
+
+        <div id="category-filters" class="filter-pills" role="tablist" aria-label="Filtr fotek podle kategorie"></div>
+      </div>
+
+      <div class="glass-card slideshow-card">
+        <div id="slideshow-stage" class="slideshow-stage">
+          <!-- Blurred ambient backdrop for portrait & landscape photos -->
+          <img id="slide-backdrop" class="slide-backdrop" src="" alt="" aria-hidden="true" />
+
+          <!-- Active crisp image or video -->
+          <button id="slide-open-lightbox" class="slide-image-btn" type="button" aria-label="Otevřít na celou obrazovku">
+            <img id="slide-image" class="slide-image" src="" alt="" decoding="async" />
+            <video id="slide-video" class="slide-video" muted playsinline preload="metadata" hidden></video>
+          </button>
+
+          <!-- Navigation arrows -->
+          <button id="slide-prev" class="slide-nav slide-nav-prev" type="button" aria-label="Předchozí fotka">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button id="slide-next" class="slide-nav slide-nav-next" type="button" aria-label="Další fotka">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          <!-- Caption & Controls Overlay -->
+          <div class="slide-overlay">
+            <div class="slide-caption-group">
+              <span id="slide-category-badge" class="slide-badge">Simča</span>
+              <p id="slide-caption" class="slide-caption"></p>
+            </div>
+
+            <div class="slide-actions">
+              <span id="slide-counter" class="slide-counter">1 / 5</span>
+              <button id="slide-mute-toggle" class="slide-control-btn" type="button" aria-label="Zapnout zvuk videa" hidden>
+                <span id="mute-toggle-icon" aria-hidden="true">🔇</span>
+              </button>
+              <button id="slide-play-toggle" class="slide-control-btn" type="button" aria-label="Pozastavit prezentaci">
+                <span id="play-toggle-icon" aria-hidden="true">❚❚</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide auto-advance timer bar -->
+          <div class="slide-timer-track" aria-hidden="true">
+            <div id="slide-timer-fill" class="slide-timer-fill"></div>
+          </div>
+        </div>
+
+        <!-- Thumbnail Strip -->
+        <div id="slide-thumbs" class="slide-thumbs" role="list" aria-label="Náhledy fotek"></div>
+      </div>
+    </section>
+
+    <!-- Two Places, One Countdown: In Oulu & Waiting at Home -->
+    <section class="crew-section" aria-labelledby="oulu-heading">
+      <div class="crew-header">
+        <p id="oulu-kicker" class="section-kicker">Právě v Oulu, Finsko 🇫🇮</p>
+        <h2 id="oulu-heading" class="section-title">Severský dobrodružný tým</h2>
+      </div>
+
+      <div id="oulu-grid" class="crew-grid crew-grid-3"></div>
+    </section>
+
+    <section class="crew-section" aria-labelledby="crew-heading">
+      <div class="crew-header">
+        <p id="home-kicker" class="section-kicker">Čekáme doma 🎄</p>
+        <h2 id="crew-heading" class="section-title">Všichni, komu se po tobě stýská</h2>
+      </div>
+
+      <div id="crew-grid" class="crew-grid crew-grid-2"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p id="footer-text">S láskou vytvořil Mišák pro Simču · Pod stejným zimním nebem ✦</p>
+  </footer>
+
+  <!-- Native Fullscreen Photo Lightbox -->
+  <dialog id="lightbox-dialog" class="lightbox-dialog" aria-label="Prohlížeč fotek">
+    <div class="lightbox-shell">
+      <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Zavřít náhled">✕</button>
+      <button id="lightbox-prev" class="lightbox-nav lightbox-prev" type="button" aria-label="Předchozí fotka">‹</button>
+      <figure class="lightbox-figure">
+        <img id="lightbox-image" class="lightbox-image" src="" alt="" />
+        <video id="lightbox-video" class="lightbox-image" controls playsinline hidden></video>
+        <figcaption id="lightbox-caption" class="lightbox-caption"></figcaption>
+      </figure>
+      <button id="lightbox-next" class="lightbox-nav lightbox-next" type="button" aria-label="Další fotka">›</button>
+    </div>
+  </dialog>
+</body>
+</html>

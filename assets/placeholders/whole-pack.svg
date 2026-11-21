@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Simča, Mišák, Ria, and Texas together for Christmas">
+  <defs>
+    <linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050b19"/>
+      <stop offset="55%" stop-color="#0b1e36"/>
+      <stop offset="100%" stop-color="#0f253c"/>
+    </linearGradient>
+    <linearGradient id="aur5" x1="0" y1="0" x2="1" y2="0.2">
+      <stop offset="0%" stop-color="#34f5b5" stop-opacity="0"/>
+      <stop offset="28%" stop-color="#34f5b5" stop-opacity="0.68"/>
+      <stop offset="58%" stop-color="#22d3ee" stop-opacity="0.58"/>
+      <stop offset="85%" stop-color="#fbbf24" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f472b6" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="treeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde68a" stop-opacity="0.65"/>
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur5"><feGaussianBlur stdDeviation="24"/></filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#sky5)"/>
+  <path d="M-30 230 C240 85, 510 265, 760 140 C940 55, 1080 185, 1230 110 L1230 290 C1040 350, 900 220, 720 315 C460 425, 220 260, -30 370 Z" fill="url(#aur5)" filter="url(#blur5)"/>
+
+  <!-- Snow landscape -->
+  <path d="M0 570 Q340 515 680 560 T1200 545 L1200 750 L0 750 Z" fill="#071326"/>
+
+  <!-- Glowing Christmas pine tree -->
+  <circle cx="885" cy="485" r="145" fill="url(#treeGlow)"/>
+  <g fill="#061926">
+    <polygon points="885,355 828,455 942,455"/>
+    <polygon points="885,405 812,515 958,515"/>
+    <polygon points="885,455 798,580 972,580"/>
+  </g>
+  <!-- Star & warm lights on tree -->
+  <circle cx="885" cy="350" r="8" fill="#fde68a"/>
+  <g fill="#fde68a" opacity="0.9">
+    <circle cx="868" cy="430" r="3.5"/><circle cx="905" cy="442" r="3.5"/><circle cx="852" cy="486" r="4"/>
+    <circle cx="894" cy="495" r="3.5"/><circle cx="922" cy="508" r="3.5"/><circle cx="845" cy="548" r="4"/>
+    <circle cx="888" cy="552" r="4"/><circle cx="932" cy="556" r="3.5"/>
+  </g>
+
+  <!-- Whole family silhouette: Texas, Mišák, Simča, Ria -->
+  <g fill="#040a16">
+    <!-- Texas (left) -->
+    <polygon points="410,504 416,472 428,500"/>
+    <polygon points="430,502 442,472 448,505"/>
+    <ellipse cx="429" cy="516" rx="18" ry="14"/>
+    <path d="M412 528 C408 552, 412 578, 416 602 L462 602 C464 570, 456 540, 444 526 Z"/>
+
+    <!-- Mišák -->
+    <circle cx="516" cy="466" r="22"/>
+    <path d="M490 496 C495 486, 537 486, 542 496 L548 602 L482 602 Z"/>
+
+    <!-- Simča -->
+    <circle cx="568" cy="476" r="20"/>
+    <path d="M544 504 C548 494, 586 494, 590 504 L598 602 L538 602 Z"/>
+
+    <!-- Ria (right) -->
+    <polygon points="628,510 634,482 646,506"/>
+    <polygon points="648,508 660,482 666,512"/>
+    <ellipse cx="647" cy="520" rx="17" ry="13"/>
+    <path d="M630 532 C622 552, 624 580, 632 602 L670 602 C672 574, 668 546, 656 532 Z"/>
+  </g>
+
+  <g font-family="'Plus Jakarta Sans', sans-serif" text-anchor="middle">
+    <text x="600" y="672" fill="#fde68a" font-size="18" letter-spacing="5" font-weight="600">DECEMBER 24 · 12:00 · TOGETHER AGAIN</text>
+    <text x="600" y="704" fill="#cbd5e1" font-size="15" opacity="0.75">Simča, Mišák, Ria &amp; Texas — Home for Christmas</text>
+  </g>
+</svg>
