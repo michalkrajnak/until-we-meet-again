@@ -345,6 +345,8 @@
   let currentIndex = 0;
   let isPlaying = true;
   let isStageHovered = false;
+  let isThumbsHovered = false;
+  let thumbUserBrowseUntil = 0;
   let slideElapsedMs = 0;
   let lastFrameTs = performance.now();
   let slideTransitionTimer = null;
@@ -436,18 +438,23 @@
         btn.appendChild(badge);
       }
 
-      btn.addEventListener('click', () => showSlide(idx));
+      btn.addEventListener('click', () => {
+        thumbUserBrowseUntil = 0;
+        showSlide(idx, { scrollThumb: false });
+      });
       el.slideThumbs.appendChild(btn);
     });
   }
 
-  // Scroll ONLY the horizontal thumbnail strip — never hijack the page's vertical scroll!
-  function syncActiveThumb() {
+  // Highlight active thumbnail; only scroll the strip on explicit navigation (never during auto-advance or user browsing)
+  function syncActiveThumb({ scrollThumb = false } = {}) {
     const buttons = el.slideThumbs.querySelectorAll('.thumb-btn');
+    const userBrowsingThumbs = isThumbsHovered || performance.now() < thumbUserBrowseUntil;
+
     buttons.forEach((btn, idx) => {
       const active = idx === currentIndex;
       btn.classList.toggle('is-active', active);
-      if (active) {
+      if (active && scrollThumb && !userBrowsingThumbs) {
         const targetLeft =
           btn.offsetLeft - el.slideThumbs.clientWidth / 2 + btn.clientWidth / 2;
         el.slideThumbs.scrollTo({
@@ -499,7 +506,7 @@
     }
   }
 
-  function showSlide(index, { immediate = false } = {}) {
+  function showSlide(index, { immediate = false, scrollThumb = false } = {}) {
     if (filteredPhotos.length === 0) return;
     if (slideTransitionTimer !== null) {
       window.clearTimeout(slideTransitionTimer);
@@ -586,7 +593,7 @@
       }, 180);
     }
 
-    syncActiveThumb();
+    syncActiveThumb({ scrollThumb });
     syncLightboxMedia(photo);
   }
 
@@ -595,8 +602,8 @@
     el.slidePlayToggle.setAttribute('aria-label', isPlaying ? t().ariaPause : t().ariaPlay);
   }
 
-  el.slidePrev.addEventListener('click', () => showSlide(currentIndex - 1));
-  el.slideNext.addEventListener('click', () => showSlide(currentIndex + 1));
+  el.slidePrev.addEventListener('click', () => showSlide(currentIndex - 1, { scrollThumb: true }));
+  el.slideNext.addEventListener('click', () => showSlide(currentIndex + 1, { scrollThumb: true }));
   el.slideMuteToggle.addEventListener('click', () => {
     el.slideVideo.muted = !el.slideVideo.muted;
     updateMuteToggleUI();
@@ -626,6 +633,20 @@
   el.slideshowStage.addEventListener('mouseleave', () => {
     isStageHovered = false;
   });
+
+  // Pause auto-advance & never reset scroll position while user browses thumbnails
+  const markThumbBrowse = () => {
+    thumbUserBrowseUntil = performance.now() + 8000;
+  };
+  el.slideThumbs.addEventListener('mouseenter', () => {
+    isThumbsHovered = true;
+  });
+  el.slideThumbs.addEventListener('mouseleave', () => {
+    isThumbsHovered = false;
+  });
+  el.slideThumbs.addEventListener('wheel', markThumbBrowse, { passive: true });
+  el.slideThumbs.addEventListener('touchstart', markThumbBrowse, { passive: true });
+  el.slideThumbs.addEventListener('pointerdown', markThumbBrowse, { passive: true });
 
   // Touch swipe support on mobile
   let touchStartX = null;
@@ -670,8 +691,8 @@
   });
 
   el.lightboxClose.addEventListener('click', () => el.lightboxDialog.close());
-  el.lightboxPrev.addEventListener('click', () => showSlide(currentIndex - 1));
-  el.lightboxNext.addEventListener('click', () => showSlide(currentIndex + 1));
+  el.lightboxPrev.addEventListener('click', () => showSlide(currentIndex - 1, { scrollThumb: true }));
+  el.lightboxNext.addEventListener('click', () => showSlide(currentIndex + 1, { scrollThumb: true }));
 
   el.lightboxDialog.addEventListener('click', (e) => {
     if (e.target === el.lightboxDialog) {
@@ -681,9 +702,9 @@
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
-      showSlide(currentIndex - 1);
+      showSlide(currentIndex - 1, { scrollThumb: true });
     } else if (e.key === 'ArrowRight') {
-      showSlide(currentIndex + 1);
+      showSlide(currentIndex + 1, { scrollThumb: true });
     }
   });
 
@@ -693,6 +714,7 @@
 
     const current = filteredPhotos[currentIndex];
     const isVideo = current && current.type === 'video';
+    const userBrowsingThumbs = isThumbsHovered || ts < thumbUserBrowseUntil;
 
     if (isVideo) {
       if (el.slideVideo.duration > 0) {
@@ -703,6 +725,7 @@
       const shouldAdvance =
         isPlaying &&
         !isStageHovered &&
+        !userBrowsingThumbs &&
         !el.lightboxDialog.open &&
         !document.hidden &&
         filteredPhotos.length > 1;
