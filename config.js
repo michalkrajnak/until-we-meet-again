@@ -121,7 +121,7 @@ window.REUNION_CONFIG = {
       celebration: {
         badge: 'Štědrý den · Konečně spolu',
         heading: 'Vítejte doma, Simčo, Rio a Texasi!',
-        message: 'Čekání je u konce. Mišák, Mamka & Tatka, Bony E a Gorny už se vás nemohli dočkat. Krásné Vánoce!',
+        message: 'Čekání je u konce. Mišák, Mamka & Taťka, Bony E a Gorny už se vás nemohli dočkat. Krásné Vánoce!',
       },
       inOulu: [
         {
@@ -155,7 +155,7 @@ window.REUNION_CONFIG = {
           icon: 'heart',
         },
         {
-          name: 'Mamka & Tatka',
+          name: 'Mamka & Taťka',
           role: 'Rodiče · Doma',
           note: 'Chystají útulné Vánoce a těší se na návrat Simči, Rii i Texase.',
           accent: 'aurora-gold',
@@ -210,8 +210,8 @@ window.REUNION_CONFIG = {
         `${daysDone} ${doneWord} done · ${daysLeft} to go`,
       daysTotalDone: (totalDays, word) => `${totalDays} / ${totalDays} ${word} complete`,
       daysTotal: (totalDays, word) => `${totalDays} ${word} total`,
-      galleryKicker: 'Memories & The Pack',
-      galleryTitle: 'Holding onto our favorite moments',
+      galleryKicker: 'Memories & Your Pack',
+      galleryTitle: 'Our moments together',
       videoTag: 'Video',
       ouluKicker: 'Currently in Oulu, Finland 🇫🇮',
       ouluTitle: 'The northern adventure team',
@@ -243,7 +243,7 @@ window.REUNION_CONFIG = {
       celebration: {
         badge: 'Christmas Eve · Finally Together',
         heading: 'Welcome Home, Simča, Ria & Texas!',
-        message: 'The wait is over. Mišák, Mamka & Tatka, Bony E, and Gorny have missed you more than words can say. Merry Christmas!',
+        message: 'The wait is over. Mišák, Mom & Dad, Bony E, and Gorny have missed you more than words can say. Merry Christmas!',
       },
       inOulu: [
         {
@@ -277,7 +277,7 @@ window.REUNION_CONFIG = {
           icon: 'heart',
         },
         {
-          name: 'Mamka & Tatka',
+          name: 'Mom & Dad',
           role: 'Parents · Home',
           note: 'Getting Christmas cozy and ready to welcome Simča, Ria & Texas back home.',
           accent: 'aurora-gold',

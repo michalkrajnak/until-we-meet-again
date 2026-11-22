@@ -1,6 +1,6 @@
 # Odpočet do shledání / Until We Meet Again
 
-Osobná dvojjazyčná (**CZ** predvolená / **EN**) odpočítavacia stránka pre **Simču** (spolu s **Riou a Texasom**) počas jej Erasmu vo fínskom **Oulu** (18. 8. – 24. 12. 2026 o 12:00), na ktorú doma čakajú **Mišák**, rodičia **Mamka & Tatka** a kone **Bony E** a **Gorny**.
+Osobná dvojjazyčná (**CZ** predvolená / **EN**) odpočítavacia stránka pre **Simču** (spolu s **Riou a Texasom**) počas jej Erasmu vo fínskom **Oulu** (18. 8. – 24. 12. 2026 o 12:00), na ktorú doma čakajú **Mišák**, rodičia **Mamka & Taťka** a kone **Bony E** a **Gorny**.
 
 ## Čo stránka obsahuje
 - **Česká (predvolená) a anglická verzia** s prepínačom `CZ | EN` v hornej lište (pamätá si voľbu v `localStorage`).
@@ -8,7 +8,7 @@ Osobná dvojjazyčná (**CZ** predvolená / **EN**) odpočítavacia stránka pre
 - **Progress bar celého Erasmu** (18. august → 24. december) s percentami, počtom prejdených/ostávajúcich dní a míľnikmi.
 - **Téma polárnej žiary a zimného Oulu** s jemným snežením, hviezdami a tlačidlom na pozastavenie animácií.
 - **Živé dvojité hodiny** – čas v Oulu vs. doma.
-- **Prehľad oboch tímov** – tím v Oulu (Simča, Ria, Texas) a všetci, ktorí čakajú doma (Mišák, Mamka & Tatka, Bony E, Gorny).
+- **Prehľad oboch tímov** – tím v Oulu (Simča, Ria, Texas) a všetci, ktorí čakajú doma (Mišák, Mamka & Taťka, Bony E, Gorny).
 - **Bežiaci fotoprezentér a videoprehrávač** s filtrami (`Vše`, `Simča`, `Simča & Mišák`, `Ria & Texas`, `Bony E & Gorny`), automatickým prispôsobením pre fotky na výšku aj na šírku a full-screen náhľadom po kliknutí.
 
 ## Ako pridať vlastné fotky a videá
