@@ -84,6 +84,9 @@
     ouluGrid: document.getElementById('oulu-grid'),
     crewGrid: document.getElementById('crew-grid'),
     footerText: document.getElementById('footer-text'),
+    musicToggle: document.getElementById('music-toggle'),
+    musicLabel: document.getElementById('music-label'),
+    ytMusicHost: document.getElementById('yt-music-host'),
     motionToggle: document.getElementById('motion-toggle'),
     snowCanvas: document.getElementById('snow-canvas'),
     lightboxDialog: document.getElementById('lightbox-dialog'),
@@ -595,6 +598,7 @@
 
     syncActiveThumb({ scrollThumb });
     syncLightboxMedia(photo);
+    syncMusicDucking();
   }
 
   function updatePlayToggleUI() {
@@ -607,6 +611,7 @@
   el.slideMuteToggle.addEventListener('click', () => {
     el.slideVideo.muted = !el.slideVideo.muted;
     updateMuteToggleUI();
+    syncMusicDucking();
   });
   el.slidePlayToggle.addEventListener('click', () => {
     isPlaying = !isPlaying;
@@ -679,6 +684,7 @@
     }
     el.lightboxDialog.showModal();
     syncLightboxMedia(photo);
+    syncMusicDucking();
   });
 
   el.lightboxDialog.addEventListener('close', () => {
@@ -688,6 +694,7 @@
     if (current && current.type === 'video' && isPlaying) {
       el.slideVideo.play().catch(() => { });
     }
+    syncMusicDucking();
   });
 
   el.lightboxClose.addEventListener('click', () => el.lightboxDialog.close());
@@ -930,6 +937,7 @@
     el.motionToggle.querySelector('.motion-label').textContent = motionEnabled
       ? strings.auroraOn
       : strings.auroraPaused;
+    updateMusicUI();
 
     renderCrew();
     renderCategoryFilters();
@@ -944,11 +952,237 @@
   });
 
   // =========================================================
+  // Background Music (Official YouTube IFrame Player API)
+  // =========================================================
+  const musicCfg = config.music || {};
+  let ytPlayer = null;
+  let ytReady = false;
+  let musicWanted = false;
+  let musicPlaying = false;
+  let musicDucked = false;
+  let userManuallyPausedMusic = false;
+  let volumeFadeTimer = null;
+
+  function updateMusicUI() {
+    if (!el.musicToggle) return;
+    const strings = t();
+    const active = musicPlaying && !musicDucked;
+    el.musicToggle.classList.toggle('is-playing', active);
+    el.musicToggle.setAttribute('aria-pressed', String(musicWanted));
+    el.musicToggle.title = musicWanted ? strings.musicPauseTitle : strings.musicPlayTitle;
+    if (el.musicLabel && musicCfg.title) {
+      el.musicLabel.textContent = musicCfg.title;
+    }
+  }
+
+  function fadeVolumeTo(targetVol) {
+    if (!ytPlayer || !ytReady) return;
+    if (volumeFadeTimer !== null) {
+      window.clearInterval(volumeFadeTimer);
+      volumeFadeTimer = null;
+    }
+
+    let currentVol = 0;
+    try {
+      currentVol = typeof ytPlayer.getVolume === 'function' ? ytPlayer.getVolume() : 0;
+    } catch {
+      currentVol = 0;
+    }
+
+    const steps = 16;
+    let step = 0;
+    const delta = (targetVol - currentVol) / steps;
+    volumeFadeTimer = window.setInterval(() => {
+      step += 1;
+      const nextVol = step >= steps ? targetVol : Math.round(currentVol + delta * step);
+      try {
+        ytPlayer.setVolume(Math.max(0, Math.min(100, nextVol)));
+      } catch {
+        // ignore player state race
+      }
+      if (step >= steps) {
+        window.clearInterval(volumeFadeTimer);
+        volumeFadeTimer = null;
+      }
+    }, 85);
+  }
+
+  function startMusicPlayback() {
+    musicWanted = true;
+    userManuallyPausedMusic = false;
+    updateMusicUI();
+
+    if (!ytPlayer || !ytReady) return;
+    try {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(0);
+      ytPlayer.playVideo();
+      fadeVolumeTo(musicCfg.volume ?? 55);
+    } catch {
+      // ignore autoplay rejections until next user tap
+    }
+  }
+
+  function pauseMusicPlayback({ manual = true } = {}) {
+    if (manual) {
+      musicWanted = false;
+      userManuallyPausedMusic = true;
+    }
+    musicPlaying = false;
+    if (volumeFadeTimer !== null) {
+      window.clearInterval(volumeFadeTimer);
+      volumeFadeTimer = null;
+    }
+    if (ytPlayer && ytReady) {
+      try {
+        ytPlayer.pauseVideo();
+      } catch {
+        // ignore
+      }
+    }
+    updateMusicUI();
+  }
+
+  function syncMusicDucking() {
+    const current = filteredPhotos[currentIndex];
+    const galleryVideoWithSound =
+      current &&
+      current.type === 'video' &&
+      ((el.lightboxDialog.open && !el.lightboxVideo.paused) ||
+        (!el.slideVideo.hidden && !el.slideVideo.muted));
+
+    if (galleryVideoWithSound) {
+      if (musicWanted && !musicDucked) {
+        musicDucked = true;
+        if (ytPlayer && ytReady) {
+          try {
+            ytPlayer.pauseVideo();
+          } catch {
+            // ignore
+          }
+        }
+        updateMusicUI();
+      }
+    } else if (musicDucked) {
+      musicDucked = false;
+      if (musicWanted && ytPlayer && ytReady) {
+        try {
+          ytPlayer.playVideo();
+          fadeVolumeTo(musicCfg.volume ?? 55);
+        } catch {
+          // ignore
+        }
+      }
+      updateMusicUI();
+    }
+  }
+
+  function initBackgroundMusic() {
+    if (!musicCfg.youtubeId || !el.ytMusicHost || !el.musicToggle) {
+      if (el.musicToggle) el.musicToggle.hidden = true;
+      return;
+    }
+
+    el.musicToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (musicWanted) {
+        pauseMusicPlayback({ manual: true });
+      } else {
+        startMusicPlayback();
+      }
+    });
+
+    // Try starting gracefully on first user interaction anywhere on the page
+    if (musicCfg.autoplayOnFirstInteraction) {
+      const handleFirstInteraction = (e) => {
+        if (el.musicToggle.contains(e.target)) return;
+        document.removeEventListener('pointerdown', handleFirstInteraction, true);
+        document.removeEventListener('keydown', handleFirstInteraction, true);
+        if (!userManuallyPausedMusic && !musicWanted) {
+          startMusicPlayback();
+        }
+      };
+      document.addEventListener('pointerdown', handleFirstInteraction, true);
+      document.addEventListener('keydown', handleFirstInteraction, true);
+    }
+
+    const createPlayer = () => {
+      if (ytPlayer || !window.YT || !window.YT.Player) return;
+      const playerVars = {
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        loop: 1,
+        modestbranding: 1,
+        playsinline: 1,
+        playlist: musicCfg.youtubeId,
+        rel: 0,
+      };
+      if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+        playerVars.origin = window.location.origin;
+      }
+
+      ytPlayer = new window.YT.Player('yt-music-host', {
+        height: '200',
+        width: '200',
+        videoId: musicCfg.youtubeId,
+        playerVars,
+        events: {
+          onReady: () => {
+            ytReady = true;
+            if (musicWanted && !musicDucked) {
+              startMusicPlayback();
+            }
+          },
+          onStateChange: (event) => {
+            if (!window.YT || !window.YT.PlayerState) return;
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              musicPlaying = true;
+              updateMusicUI();
+            } else if (event.data === window.YT.PlayerState.PAUSED) {
+              musicPlaying = false;
+              updateMusicUI();
+            } else if (event.data === window.YT.PlayerState.ENDED && musicWanted && !musicDucked) {
+              try {
+                ytPlayer.seekTo(0);
+                ytPlayer.playVideo();
+              } catch {
+                // ignore
+              }
+            }
+          },
+          onError: () => {
+            musicPlaying = false;
+            updateMusicUI();
+          },
+        },
+      });
+    };
+
+    const prevReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prevReady === 'function') prevReady();
+      createPlayer();
+    };
+
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    } else {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.async = true;
+      document.head.appendChild(tag);
+    }
+  }
+
+  // =========================================================
   // Boot
   // =========================================================
   renderThumbs();
   showSlide(0, { immediate: true });
   initSkyParticles();
+  initBackgroundMusic();
   applyLanguage(currentLang);
   applyMotionState();
   requestAnimationFrame(tickSlideshow);

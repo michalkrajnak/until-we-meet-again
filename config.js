@@ -45,6 +45,15 @@ window.REUNION_CONFIG = {
     shuffleOnLoad: true,
   },
 
+  // Background music (official YouTube IFrame Player)
+  music: {
+    youtubeId: 'u2ah9tWTkmk', // Alex Warren - Ordinary (Official Video)
+    title: 'Ordinary',
+    artist: 'Alex Warren',
+    volume: 55,
+    autoplayOnFirstInteraction: true,
+  },
+
   // Localized UI copy
   i18n: {
     cs: {
@@ -53,6 +62,8 @@ window.REUNION_CONFIG = {
       routeHome: 'Domů na Vánoce 🎄',
       auroraOn: 'Polární záře',
       auroraPaused: 'Záře vypnuta',
+      musicPlayTitle: 'Přehrát hudbu: Alex Warren – Ordinary',
+      musicPauseTitle: 'Pozastavit hudbu: Alex Warren – Ordinary',
       eyebrow: 'Erasmus 2026 · Oulu → Domů',
       title: 'Odpočet do shledání',
       subtitle: 'Odpočítáváme každou vteřinu, než se Simča, Ria a Texas vrátí z Oulu domů na Vánoce.',
@@ -167,6 +178,8 @@ window.REUNION_CONFIG = {
       routeHome: 'Home for Christmas 🎄',
       auroraOn: 'Aurora On',
       auroraPaused: 'Aurora Off',
+      musicPlayTitle: 'Play music: Alex Warren – Ordinary',
+      musicPauseTitle: 'Pause music: Alex Warren – Ordinary',
       eyebrow: 'Erasmus 2026 · Oulu → Home',
       title: 'Until We Meet Again',
       subtitle: 'Counting every moment until Simča, Ria & Texas come home from Oulu for Christmas.',

@@ -42,6 +42,15 @@
         <button id="lang-en" class="lang-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
 
+      <button id="music-toggle" class="icon-pill music-pill" type="button" aria-pressed="false" title="Přehrát hudbu: Alex Warren – Ordinary">
+        <span class="music-eq" aria-hidden="true">
+          <span class="eq-bar"></span>
+          <span class="eq-bar"></span>
+          <span class="eq-bar"></span>
+        </span>
+        <span id="music-label" class="music-label">Ordinary</span>
+      </button>
+
       <button id="motion-toggle" class="icon-pill" type="button" aria-pressed="false" title="Přepnout animaci polární záře a sněžení">
         <span class="motion-icon" aria-hidden="true">❄</span>
         <span class="motion-label">Polární záře</span>
@@ -240,6 +249,9 @@
   <footer class="site-footer">
     <p id="footer-text">S láskou vytvořil Mišák pro Simču · Pod stejným zimním nebem ✦</p>
   </footer>
+
+  <!-- Hidden YouTube Background Audio Host -->
+  <div id="yt-music-host" class="yt-music-host" aria-hidden="true"></div>
 
   <!-- Native Fullscreen Photo Lightbox -->
   <dialog id="lightbox-dialog" class="lightbox-dialog" aria-label="Prohlížeč fotek">
