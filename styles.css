@@ -387,6 +387,146 @@ body.motion-paused .icon-pill .motion-icon {
   overflow: hidden;
 }
 
+/* =========================================================
+   Welcome Gift Gate
+   ========================================================= */
+body.gate-open {
+  overflow: hidden;
+}
+
+.welcome-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3, 12, 18, 0.56);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 1;
+  transition: opacity 0.65s ease, visibility 0.65s ease;
+}
+
+.welcome-gate.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome-card {
+  width: min(100%, 440px);
+  padding: 40px 32px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-color: rgba(64, 224, 208, 0.34);
+  background: rgba(6, 23, 33, 0.72);
+  box-shadow: 0 32px 90px rgba(0, 8, 14, 0.7), 0 0 60px rgba(46, 232, 218, 0.14), inset 0 1px 0 rgba(180, 255, 248, 0.18);
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+}
+
+.welcome-gate.is-leaving .welcome-card {
+  transform: scale(1.04) translateY(-8px);
+  opacity: 0;
+}
+
+.welcome-emblem {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.45rem;
+  color: #ccfbf7;
+  background: radial-gradient(circle at 35% 35%, rgba(46, 232, 218, 0.34), rgba(6, 182, 212, 0.12));
+  border: 1px solid rgba(64, 224, 208, 0.45);
+  box-shadow: 0 0 28px rgba(46, 232, 218, 0.28);
+}
+
+.welcome-eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aurora-green);
+}
+
+.welcome-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 6vw, 2.85rem);
+  font-weight: 600;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 12%, #a5f8f2 52%, #40e0d0 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcome-text {
+  margin: 14px 0 26px;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.welcome-cta {
+  width: 100%;
+  max-width: 280px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border: 1px solid rgba(116, 249, 238, 0.72);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #14d0d0 0%, #2ee8da 55%, #5ef2e6 100%);
+  color: #03151d;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 34px rgba(46, 232, 218, 0.34);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.welcome-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(46, 232, 218, 0.46);
+  filter: brightness(1.04);
+}
+
+.welcome-cta:focus-visible,
+.welcome-silent:focus-visible {
+  outline: 2px solid var(--aurora-green);
+  outline-offset: 3px;
+}
+
+.welcome-song-note {
+  margin: 12px 0 18px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.welcome-silent {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.welcome-silent:hover {
+  color: var(--text-primary);
+}
+
 .icon-pill:focus-visible,
 .filter-pill:focus-visible,
 .slide-nav:focus-visible,

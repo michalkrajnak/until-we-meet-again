@@ -17,7 +17,7 @@
   <script defer src="photos-data.js"></script>
   <script defer src="app.js"></script>
 </head>
-<body>
+<body class="gate-open">
   <!-- Atmospheric Nordic Aurora & Snow Background -->
   <div class="sky-backdrop" aria-hidden="true">
     <div class="aurora aurora-1"></div>
@@ -25,6 +25,29 @@
     <div class="aurora aurora-3"></div>
     <canvas id="snow-canvas" class="snow-canvas"></canvas>
     <div class="horizon-glow"></div>
+  </div>
+
+  <!-- Welcome Gift Gate (unlocks background music cleanly on desktop & mobile) -->
+  <div id="welcome-gate" class="welcome-gate" role="dialog" aria-modal="true" aria-labelledby="welcome-heading">
+    <div class="glass-card welcome-card">
+      <div class="welcome-emblem" aria-hidden="true">✦</div>
+      <p id="welcome-eyebrow" class="welcome-eyebrow">Oulu, Finsko 🇫🇮 → Domů na Vánoce 🎄</p>
+      <h2 id="welcome-heading" class="welcome-heading">Pro Simču</h2>
+      <p id="welcome-text" class="welcome-text">
+        Malý odpočet pod polární září, než se s Riou a Texasem vrátíš domů na Vánoce.
+      </p>
+
+      <button id="welcome-enter-music" class="welcome-cta" type="button">
+        <span id="welcome-btn-label">Otevřít se zvukem</span>
+        <span aria-hidden="true">✦</span>
+      </button>
+
+      <p id="welcome-song-note" class="welcome-song-note">♪ Alex Warren – Ordinary</p>
+
+      <button id="welcome-enter-silent" class="welcome-silent" type="button">
+        Vstoupit bez zvuku
+      </button>
+    </div>
   </div>
 
   <!-- Top Utility Bar -->

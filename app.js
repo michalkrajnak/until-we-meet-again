@@ -87,6 +87,14 @@
     musicToggle: document.getElementById('music-toggle'),
     musicLabel: document.getElementById('music-label'),
     ytMusicHost: document.getElementById('yt-music-host'),
+    welcomeGate: document.getElementById('welcome-gate'),
+    welcomeEyebrow: document.getElementById('welcome-eyebrow'),
+    welcomeHeading: document.getElementById('welcome-heading'),
+    welcomeText: document.getElementById('welcome-text'),
+    welcomeBtnLabel: document.getElementById('welcome-btn-label'),
+    welcomeSongNote: document.getElementById('welcome-song-note'),
+    welcomeEnterMusic: document.getElementById('welcome-enter-music'),
+    welcomeEnterSilent: document.getElementById('welcome-enter-silent'),
     motionToggle: document.getElementById('motion-toggle'),
     snowCanvas: document.getElementById('snow-canvas'),
     lightboxDialog: document.getElementById('lightbox-dialog'),
@@ -729,8 +737,10 @@
         el.slideTimerFill.style.width = `${pct}%`;
       }
     } else {
+      const gateClosed = !el.welcomeGate || el.welcomeGate.hidden;
       const shouldAdvance =
         isPlaying &&
+        gateClosed &&
         !isStageHovered &&
         !userBrowsingThumbs &&
         !el.lightboxDialog.open &&
@@ -937,6 +947,12 @@
     el.motionToggle.querySelector('.motion-label').textContent = motionEnabled
       ? strings.auroraOn
       : strings.auroraPaused;
+    if (el.welcomeEyebrow) el.welcomeEyebrow.textContent = strings.welcomeEyebrow;
+    if (el.welcomeHeading) el.welcomeHeading.textContent = strings.welcomeHeading;
+    if (el.welcomeText) el.welcomeText.textContent = strings.welcomeText;
+    if (el.welcomeBtnLabel) el.welcomeBtnLabel.textContent = strings.welcomeBtn;
+    if (el.welcomeSongNote) el.welcomeSongNote.textContent = strings.welcomeSongNote;
+    if (el.welcomeEnterSilent) el.welcomeEnterSilent.textContent = strings.welcomeSilent;
     updateMusicUI();
 
     renderCrew();
@@ -1077,6 +1093,43 @@
     }
   }
 
+  function closeWelcomeGate({ withMusic = false } = {}) {
+    if (withMusic) {
+      startMusicPlayback();
+    } else {
+      userManuallyPausedMusic = true;
+    }
+
+    if (!el.welcomeGate || el.welcomeGate.hidden) return;
+    el.welcomeGate.classList.add('is-leaving');
+    document.body.classList.remove('gate-open');
+    window.setTimeout(() => {
+      el.welcomeGate.hidden = true;
+    }, 650);
+  }
+
+  function initWelcomeGate() {
+    if (!el.welcomeGate) return;
+
+    if (el.welcomeEnterMusic) {
+      el.welcomeEnterMusic.addEventListener('click', () => {
+        closeWelcomeGate({ withMusic: true });
+      });
+    }
+
+    if (el.welcomeEnterSilent) {
+      el.welcomeEnterSilent.addEventListener('click', () => {
+        closeWelcomeGate({ withMusic: false });
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && el.welcomeGate && !el.welcomeGate.hidden) {
+        closeWelcomeGate({ withMusic: false });
+      }
+    });
+  }
+
   function initBackgroundMusic() {
     if (!musicCfg.youtubeId || !el.ytMusicHost || !el.musicToggle) {
       if (el.musicToggle) el.musicToggle.hidden = true;
@@ -1091,20 +1144,6 @@
         startMusicPlayback();
       }
     });
-
-    // Try starting gracefully on first user interaction anywhere on the page
-    if (musicCfg.autoplayOnFirstInteraction) {
-      const handleFirstInteraction = (e) => {
-        if (el.musicToggle.contains(e.target)) return;
-        document.removeEventListener('pointerdown', handleFirstInteraction, true);
-        document.removeEventListener('keydown', handleFirstInteraction, true);
-        if (!userManuallyPausedMusic && !musicWanted) {
-          startMusicPlayback();
-        }
-      };
-      document.addEventListener('pointerdown', handleFirstInteraction, true);
-      document.addEventListener('keydown', handleFirstInteraction, true);
-    }
 
     const createPlayer = () => {
       if (ytPlayer || !window.YT || !window.YT.Player) return;
@@ -1182,6 +1221,7 @@
   renderThumbs();
   showSlide(0, { immediate: true });
   initSkyParticles();
+  initWelcomeGate();
   initBackgroundMusic();
   applyLanguage(currentLang);
   applyMotionState();
