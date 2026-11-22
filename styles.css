@@ -476,6 +476,7 @@ body.gate-open {
 .welcome-cta {
   width: 100%;
   max-width: 280px;
+  margin-bottom: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

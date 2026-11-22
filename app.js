@@ -92,7 +92,6 @@
     welcomeHeading: document.getElementById('welcome-heading'),
     welcomeText: document.getElementById('welcome-text'),
     welcomeBtnLabel: document.getElementById('welcome-btn-label'),
-    welcomeSongNote: document.getElementById('welcome-song-note'),
     welcomeEnterMusic: document.getElementById('welcome-enter-music'),
     welcomeEnterSilent: document.getElementById('welcome-enter-silent'),
     motionToggle: document.getElementById('motion-toggle'),
@@ -951,7 +950,6 @@
     if (el.welcomeHeading) el.welcomeHeading.textContent = strings.welcomeHeading;
     if (el.welcomeText) el.welcomeText.textContent = strings.welcomeText;
     if (el.welcomeBtnLabel) el.welcomeBtnLabel.textContent = strings.welcomeBtn;
-    if (el.welcomeSongNote) el.welcomeSongNote.textContent = strings.welcomeSongNote;
     if (el.welcomeEnterSilent) el.welcomeEnterSilent.textContent = strings.welcomeSilent;
     updateMusicUI();
 
@@ -986,8 +984,8 @@
     el.musicToggle.classList.toggle('is-playing', active);
     el.musicToggle.setAttribute('aria-pressed', String(musicWanted));
     el.musicToggle.title = musicWanted ? strings.musicPauseTitle : strings.musicPlayTitle;
-    if (el.musicLabel && musicCfg.title) {
-      el.musicLabel.textContent = musicCfg.title;
+    if (el.musicLabel) {
+      el.musicLabel.textContent = strings.musicLabel;
     }
   }
 
