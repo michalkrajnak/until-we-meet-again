@@ -798,8 +798,50 @@ body.gate-open {
 }
 
 body.reunion-live .countdown-card {
-  border-color: rgba(251, 191, 36, 0.35);
-  box-shadow: 0 24px 80px rgba(251, 191, 36, 0.16), inset 0 1px 0 rgba(254, 243, 199, 0.25);
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-color: rgba(251, 191, 36, 0.48);
+  background:
+    linear-gradient(
+      to top,
+      rgba(4, 13, 20, 0.95) 0%,
+      rgba(4, 13, 20, 0.82) 28%,
+      rgba(4, 13, 20, 0.28) 48%,
+      rgba(4, 13, 20, 0.04) 68%,
+      rgba(4, 13, 20, 0.08) 100%
+    ),
+    url('media/us/Christmashouse%20Santa%2022.10.2026-5083.jpg') center 16% / cover no-repeat;
+  box-shadow: 0 28px 86px rgba(251, 191, 36, 0.18), inset 0 1px 0 rgba(254, 243, 199, 0.32);
+}
+
+body.reunion-live .celebration-panel {
+  padding-top: 320px;
+  padding-bottom: 4px;
+}
+
+body.reunion-live .celebration-badge {
+  background: rgba(12, 18, 24, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+body.reunion-live .celebration-heading {
+  margin: 12px 0 8px;
+  font-size: clamp(1.75rem, 3.6vw, 2.7rem);
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.82);
+}
+
+body.reunion-live .celebration-message {
+  color: #f1f7fa;
+  font-size: 0.98rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+body.reunion-live .target-meta {
+  margin-top: 18px;
+  border-top-color: rgba(254, 243, 199, 0.18);
 }
 
 /* =========================================================
@@ -1525,6 +1567,14 @@ body.reunion-live .countdown-card {
     width: 100%;
     text-align: center;
     padding-top: 2px;
+  }
+
+  body.reunion-live .countdown-card {
+    min-height: 440px;
+  }
+
+  body.reunion-live .celebration-panel {
+    padding-top: 190px;
   }
 }
 
