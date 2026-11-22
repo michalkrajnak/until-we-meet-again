@@ -749,6 +749,8 @@
   // =========================================================
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let motionEnabled = !prefersReducedMotion.matches;
+  let snowOpacity = motionEnabled ? 1 : 0;
+  let skyRafId = null;
 
   const ctx = el.snowCanvas.getContext('2d');
   let width = 0;
@@ -785,20 +787,34 @@
     }));
   }
 
+  function scheduleSkyFrame() {
+    if (skyRafId !== null) return;
+    skyRafId = requestAnimationFrame(drawSkyFrame);
+  }
+
   function drawSkyFrame() {
+    skyRafId = null;
     ctx.clearRect(0, 0, width, height);
+
+    // Smoothly fade snow in/out when toggling Aurora On / Off
+    const targetSnowOpacity = motionEnabled ? 1 : 0;
+    if (Math.abs(snowOpacity - targetSnowOpacity) > 0.01) {
+      snowOpacity += (targetSnowOpacity - snowOpacity) * 0.08;
+    } else {
+      snowOpacity = targetSnowOpacity;
+    }
 
     for (const s of stars) {
       if (motionEnabled) s.phase += s.speed;
       const alpha = 0.25 + 0.55 * (0.5 + 0.5 * Math.sin(s.phase));
-      ctx.fillStyle = `rgba(225, 242, 255, ${alpha.toFixed(3)})`;
+      ctx.fillStyle = `rgba(225, 248, 255, ${alpha.toFixed(3)})`;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    for (const f of flakes) {
-      if (motionEnabled) {
+    if (snowOpacity > 0.005) {
+      for (const f of flakes) {
         f.wobble += 0.012;
         f.y += f.vy;
         f.x += f.vx + Math.sin(f.wobble) * 0.22;
@@ -809,26 +825,33 @@
         }
         if (f.x > width + 6) f.x = -6;
         if (f.x < -6) f.x = width + 6;
-      }
 
-      ctx.fillStyle = `rgba(235, 248, 255, ${f.alpha.toFixed(3)})`;
-      ctx.beginPath();
-      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-      ctx.fill();
+        ctx.fillStyle = `rgba(235, 250, 255, ${(f.alpha * snowOpacity).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    if (motionEnabled && !document.hidden) {
-      requestAnimationFrame(drawSkyFrame);
+    const stillFadingSnow = Math.abs(snowOpacity - targetSnowOpacity) > 0.005;
+    if ((motionEnabled || stillFadingSnow) && !document.hidden) {
+      scheduleSkyFrame();
     }
   }
 
   function applyMotionState() {
     document.body.classList.toggle('motion-paused', !motionEnabled);
-    el.motionToggle.setAttribute('aria-pressed', String(!motionEnabled));
+    el.motionToggle.classList.toggle('is-active', motionEnabled);
+    el.motionToggle.setAttribute('aria-pressed', String(motionEnabled));
     el.motionToggle.querySelector('.motion-label').textContent = motionEnabled
       ? t().auroraOn
       : t().auroraPaused;
-    drawSkyFrame();
+
+    if (!motionEnabled) {
+      el.slideImage.classList.remove('ken-burns');
+    }
+
+    scheduleSkyFrame();
   }
 
   el.motionToggle.addEventListener('click', () => {
@@ -838,13 +861,13 @@
 
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && motionEnabled) {
-      requestAnimationFrame(drawSkyFrame);
+      scheduleSkyFrame();
     }
   });
 
   window.addEventListener('resize', () => {
     initSkyParticles();
-    if (!motionEnabled) drawSkyFrame();
+    scheduleSkyFrame();
   });
 
   // =========================================================

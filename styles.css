@@ -69,35 +69,42 @@ body {
 
 .aurora {
   position: absolute;
-  inset: -25% -20% auto -20%;
-  height: 75vh;
-  filter: blur(72px);
-  opacity: 0.52;
+  inset: -18% -24% auto -24%;
+  height: 76vh;
+  filter: blur(48px);
+  opacity: 0.72;
   mix-blend-mode: screen;
   will-change: transform, opacity;
+  transition: opacity 0.8s ease;
 }
 
 .aurora-1 {
-  background: radial-gradient(ellipse 58% 46% at 28% 34%, rgba(40, 232, 218, 0.68), transparent 72%),
-    radial-gradient(ellipse 48% 42% at 70% 28%, rgba(6, 182, 212, 0.56), transparent 74%);
-  animation: auroraDriftA 22s ease-in-out infinite alternate;
+  background:
+    radial-gradient(ellipse 48% 30% at 24% 38%, rgba(46, 240, 224, 0.85), transparent 70%),
+    radial-gradient(ellipse 42% 28% at 62% 26%, rgba(6, 200, 220, 0.74), transparent 72%),
+    radial-gradient(ellipse 36% 24% at 86% 42%, rgba(94, 242, 230, 0.56), transparent 70%);
+  animation: auroraDriftA 11s ease-in-out infinite alternate;
 }
 
 .aurora-2 {
-  top: -12%;
+  top: -10%;
   height: 68vh;
-  background: radial-gradient(ellipse 52% 44% at 62% 38%, rgba(45, 212, 191, 0.56), transparent 72%),
-    radial-gradient(ellipse 44% 38% at 22% 44%, rgba(56, 189, 248, 0.44), transparent 70%);
-  animation: auroraDriftB 28s ease-in-out infinite alternate;
+  filter: blur(54px);
+  background:
+    radial-gradient(ellipse 46% 28% at 72% 36%, rgba(45, 224, 205, 0.75), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 28% 46%, rgba(56, 189, 248, 0.58), transparent 70%);
+  animation: auroraDriftB 15s ease-in-out infinite alternate;
 }
 
 .aurora-3 {
-  top: -5%;
-  height: 55vh;
-  opacity: 0.36;
-  background: radial-gradient(ellipse 42% 36% at 48% 32%, rgba(94, 242, 230, 0.46), transparent 70%),
-    radial-gradient(ellipse 45% 32% at 82% 42%, rgba(129, 140, 248, 0.32), transparent 72%);
-  animation: auroraDriftC 19s ease-in-out infinite alternate;
+  top: -4%;
+  height: 58vh;
+  filter: blur(42px);
+  opacity: 0.52;
+  background:
+    radial-gradient(ellipse 36% 22% at 46% 32%, rgba(120, 255, 244, 0.68), transparent 68%),
+    radial-gradient(ellipse 38% 24% at 80% 38%, rgba(129, 140, 248, 0.44), transparent 70%);
+  animation: auroraDriftC 9s ease-in-out infinite alternate;
 }
 
 .horizon-glow {
@@ -116,45 +123,53 @@ body {
 
 @keyframes auroraDriftA {
   0% {
-    transform: translate3d(-4%, -2%, 0) rotate(-4deg) scale(1);
-    opacity: 0.46;
+    transform: translate3d(-11%, -4%, 0) skewX(-12deg) rotate(-5deg) scale(1, 0.92);
+    opacity: 0.55;
   }
 
   50% {
-    transform: translate3d(5%, 4%, 0) rotate(3deg) scale(1.08);
-    opacity: 0.62;
+    transform: translate3d(4%, 5%, 0) skewX(6deg) rotate(3deg) scale(1.12, 1.08);
+    opacity: 0.86;
   }
 
   100% {
-    transform: translate3d(-2%, 6%, 0) rotate(-2deg) scale(1.03);
-    opacity: 0.5;
+    transform: translate3d(12%, -2%, 0) skewX(14deg) rotate(6deg) scale(1.04, 0.96);
+    opacity: 0.66;
   }
 }
 
 @keyframes auroraDriftB {
   0% {
-    transform: translate3d(6%, 3%, 0) rotate(5deg) scale(1.05);
-    opacity: 0.42;
+    transform: translate3d(12%, 4%, 0) skewX(10deg) rotate(6deg) scale(1.06, 0.95);
+    opacity: 0.46;
+  }
+
+  50% {
+    transform: translate3d(-3%, -5%, 0) skewX(-6deg) rotate(-2deg) scale(1.1, 1.06);
+    opacity: 0.78;
   }
 
   100% {
-    transform: translate3d(-6%, -3%, 0) rotate(-4deg) scale(0.96);
-    opacity: 0.58;
+    transform: translate3d(-13%, 3%, 0) skewX(-14deg) rotate(-6deg) scale(0.96, 1.02);
+    opacity: 0.56;
   }
 }
 
 @keyframes auroraDriftC {
   0% {
-    transform: translate3d(-3%, 2%, 0) scale(0.96);
+    transform: translate3d(-9%, 3%, 0) skewX(-8deg) scale(0.94, 1.06);
+    opacity: 0.36;
   }
 
   100% {
-    transform: translate3d(4%, -4%, 0) scale(1.1);
+    transform: translate3d(10%, -6%, 0) skewX(12deg) scale(1.14, 0.92);
+    opacity: 0.72;
   }
 }
 
-/* Motion paused state */
+/* Aurora & snow turned off state */
 body.motion-paused .aurora {
+  opacity: 0 !important;
   animation-play-state: paused;
 }
 
@@ -285,8 +300,23 @@ body.motion-paused .aurora {
 }
 
 .icon-pill:hover {
-  border-color: rgba(52, 245, 181, 0.45);
+  border-color: rgba(46, 232, 218, 0.55);
   color: var(--text-primary);
+}
+
+.icon-pill.is-active {
+  border-color: rgba(46, 232, 218, 0.52);
+  background: linear-gradient(135deg, rgba(46, 232, 218, 0.16), rgba(6, 182, 212, 0.14));
+  color: #e6fffe;
+  box-shadow: 0 0 18px rgba(46, 232, 218, 0.16);
+}
+
+.icon-pill .motion-icon {
+  color: var(--aurora-green);
+}
+
+body.motion-paused .icon-pill .motion-icon {
+  color: var(--text-muted);
 }
 
 .icon-pill:focus-visible,
