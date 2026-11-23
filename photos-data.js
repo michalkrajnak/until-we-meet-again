@@ -257,13 +257,6 @@ window.REUNION_PHOTOS = [
     caption: 'Simča & Mišák',
   },
   {
-    src: 'media/us/Screenshot 2026-04-28 at 17.27.16.jpg',
-    thumb: 'media/thumbs/us/Screenshot 2026-04-28 at 17.27.16.jpg',
-    type: 'image',
-    category: 'us',
-    caption: 'Simča & Mišák',
-  },
-  {
     src: 'media/us/WhatsApp Image 2025-02-26 at 15.27.50.jpg',
     thumb: 'media/thumbs/us/WhatsApp Image 2025-02-26 at 15.27.50.jpg',
     type: 'image',
@@ -469,6 +462,13 @@ window.REUNION_PHOTOS = [
   {
     src: 'media/dogs/IMG_7219.jpg',
     thumb: 'media/thumbs/dogs/IMG_7219.jpg',
+    type: 'image',
+    category: 'dogs',
+    caption: 'Simča with Ria & Texas',
+  },
+  {
+    src: 'media/dogs/Screenshot 2026-04-28 at 17.27.49.jpg',
+    thumb: 'media/thumbs/dogs/Screenshot 2026-04-28 at 17.27.49.jpg',
     type: 'image',
     category: 'dogs',
     caption: 'Simča with Ria & Texas',

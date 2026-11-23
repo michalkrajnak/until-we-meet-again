@@ -144,6 +144,77 @@
         </div>
       </div>
 
+      <!-- Special Festive Day Banner (Advent Sundays & St. Nicholas) -->
+      <div id="special-day-banner" class="glass-card special-day-banner" hidden>
+        <div class="special-day-icon" id="special-day-icon" aria-hidden="true">🕯</div>
+        <div class="special-day-copy">
+          <p id="special-day-badge" class="special-day-badge"></p>
+          <p id="special-day-text" class="special-day-text"></p>
+        </div>
+      </div>
+
+      <!-- Dec 5 Anniversary Special Moment (auto-unlocks 5. 12. or ?preview=anniversary) -->
+      <article id="anniversary-card" class="glass-card anniversary-card" aria-labelledby="anniversary-sealed-title" hidden>
+        <div id="anniversary-sealed" class="anniversary-sealed">
+          <div class="anniversary-seal" aria-hidden="true">♥</div>
+          <p id="anniversary-badge" class="anniversary-badge">5. prosince · Naše výročí</p>
+          <h2 id="anniversary-sealed-title" class="anniversary-sealed-title"></h2>
+          <p id="anniversary-sealed-subtitle" class="anniversary-sealed-subtitle"></p>
+          <button id="anniversary-open-btn" class="anniversary-cta" type="button">
+            <span id="anniversary-open-label">Otevřít vzkaz</span>
+            <span aria-hidden="true">♥</span>
+          </button>
+        </div>
+
+        <div id="anniversary-letter" class="anniversary-letter" hidden>
+          <div class="anniversary-letter-grid">
+            <div id="anniversary-photo-wrap" class="anniversary-photo-wrap">
+              <img id="anniversary-photo" class="anniversary-photo" src="" alt="" loading="lazy" />
+            </div>
+            <div class="anniversary-letter-body">
+              <p id="anniversary-letter-badge" class="anniversary-badge">5. prosince · Naše výročí</p>
+              <h2 id="anniversary-heading" class="anniversary-heading"></h2>
+              <div id="anniversary-paragraphs" class="anniversary-paragraphs"></div>
+              <div class="anniversary-letter-footer">
+                <p id="anniversary-signature" class="anniversary-signature"></p>
+                <button id="anniversary-close-btn" class="anniversary-close-btn" type="button"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Dec 12 Name Day Special Moment (auto-unlocks 12. 12. or ?preview=nameday) -->
+      <article id="nameday-card" class="glass-card nameday-card" aria-labelledby="nameday-sealed-title" hidden>
+        <div id="nameday-sealed" class="anniversary-sealed nameday-sealed">
+          <div class="anniversary-seal nameday-seal" aria-hidden="true">✨</div>
+          <p id="nameday-badge" class="anniversary-badge nameday-badge">12. prosince · Simčin svátek</p>
+          <h2 id="nameday-sealed-title" class="anniversary-sealed-title nameday-sealed-title"></h2>
+          <p id="nameday-sealed-subtitle" class="anniversary-sealed-subtitle"></p>
+          <button id="nameday-open-btn" class="anniversary-cta nameday-cta" type="button">
+            <span id="nameday-open-label">Rozbalit přání</span>
+            <span aria-hidden="true">✨</span>
+          </button>
+        </div>
+
+        <div id="nameday-letter" class="anniversary-letter" hidden>
+          <div class="anniversary-letter-grid">
+            <div id="nameday-photo-wrap" class="anniversary-photo-wrap nameday-photo-wrap">
+              <img id="nameday-photo" class="anniversary-photo nameday-photo" src="" alt="" loading="lazy" />
+            </div>
+            <div class="anniversary-letter-body">
+              <p id="nameday-letter-badge" class="anniversary-badge nameday-badge">12. prosince · Simčin svátek</p>
+              <h2 id="nameday-heading" class="anniversary-heading nameday-heading"></h2>
+              <div id="nameday-paragraphs" class="anniversary-paragraphs"></div>
+              <div class="anniversary-letter-footer nameday-letter-footer">
+                <p id="nameday-signature" class="anniversary-signature nameday-signature"></p>
+                <button id="nameday-close-btn" class="anniversary-close-btn nameday-close-btn" type="button"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
       <!-- Erasmus Journey Progress -->
       <div class="glass-card progress-card" aria-labelledby="progress-heading">
         <div class="progress-header">
@@ -180,6 +251,128 @@
           <span id="progress-start-endpoint">18. srpna · Oulu 🇫🇮</span>
           <span id="days-stat" class="days-stat"></span>
           <span id="progress-end-endpoint">24. prosince, 12:00 · Doma 🎄</span>
+        </div>
+
+        <div class="festive-strip-wrap">
+          <p id="festive-strip-label" class="festive-strip-label">Sváteční milníky cestou domů</p>
+          <div id="festive-milestones" class="festive-milestones" role="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two Worlds Under One Sky: Live Oulu vs. Brno -->
+    <section class="two-worlds-section" aria-labelledby="two-worlds-heading">
+      <div class="two-worlds-header">
+        <div>
+          <p id="two-worlds-kicker" class="section-kicker">Živě právě teď</p>
+          <h2 id="two-worlds-heading" class="section-title">Dva světy pod jedním nebem</h2>
+        </div>
+        <span id="two-worlds-distance" class="distance-pill">
+          <span class="distance-dot" aria-hidden="true"></span>
+          <strong id="distance-value">1 834 km</strong>
+          <span id="distance-label">vzdušnou čarou</span>
+        </span>
+      </div>
+
+      <div class="glass-card two-worlds-card">
+        <div class="worlds-grid">
+          <!-- Oulu, Finland -->
+          <div class="world-panel world-panel-oulu">
+            <div class="world-top">
+              <div>
+                <h3 id="world-oulu-name" class="world-city">Oulu, Finsko 🇫🇮</h3>
+                <p id="world-oulu-sub" class="world-sub">65° N · Arktický sever</p>
+              </div>
+              <time id="world-oulu-time" class="world-clock">--:--</time>
+            </div>
+
+            <div class="world-weather">
+              <span id="world-oulu-icon" class="weather-glyph" aria-hidden="true">❄</span>
+              <div class="weather-main">
+                <span id="world-oulu-temp" class="weather-temp">--°</span>
+                <span id="world-oulu-desc" class="weather-desc">Načítám počasí…</span>
+              </div>
+              <span id="world-oulu-feels" class="weather-feels"></span>
+            </div>
+
+            <div class="world-daylight">
+              <div class="daylight-meta">
+                <span id="world-oulu-daylight-label" class="daylight-label">Denní světlo</span>
+                <strong id="world-oulu-daylight-val" class="daylight-val">--</strong>
+              </div>
+              <div class="daylight-bar-track" aria-hidden="true">
+                <div id="world-oulu-daylight-fill" class="daylight-bar-fill daylight-bar-oulu" style="left: 42%; width: 15%"></div>
+              </div>
+              <div class="sun-times">
+                <span id="world-oulu-sunrise">☀ --:--</span>
+                <span id="world-oulu-sunset">☾ --:--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Sky Bridge -->
+          <div class="worlds-bridge" aria-hidden="true">
+            <span class="bridge-line"></span>
+            <span class="bridge-star">✦</span>
+            <span class="bridge-line"></span>
+          </div>
+
+          <!-- Brno, Czechia -->
+          <div class="world-panel world-panel-home">
+            <div class="world-top">
+              <div>
+                <h3 id="world-home-name" class="world-city">Brno, Česko 🇨🇿</h3>
+                <p id="world-home-sub" class="world-sub">49° N · Doma</p>
+              </div>
+              <time id="world-home-time" class="world-clock">--:--</time>
+            </div>
+
+            <div class="world-weather">
+              <span id="world-home-icon" class="weather-glyph" aria-hidden="true">☁</span>
+              <div class="weather-main">
+                <span id="world-home-temp" class="weather-temp">--°</span>
+                <span id="world-home-desc" class="weather-desc">Načítám počasí…</span>
+              </div>
+              <span id="world-home-feels" class="weather-feels"></span>
+            </div>
+
+            <div class="world-daylight">
+              <div class="daylight-meta">
+                <span id="world-home-daylight-label" class="daylight-label">Denní světlo</span>
+                <strong id="world-home-daylight-val" class="daylight-val">--</strong>
+              </div>
+              <div class="daylight-bar-track" aria-hidden="true">
+                <div id="world-home-daylight-fill" class="daylight-bar-fill daylight-bar-home" style="left: 31%; width: 35%"></div>
+              </div>
+              <div class="sun-times">
+                <span id="world-home-sunrise">☀ --:--</span>
+                <span id="world-home-sunset">☾ --:--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p id="daylight-compare" class="daylight-compare" hidden></p>
+
+        <!-- Live Aurora Kp-index over Oulu -->
+        <div id="aurora-live-strip" class="aurora-live-strip">
+          <div class="aurora-strip-head">
+            <span class="aurora-strip-dot" aria-hidden="true"></span>
+            <span id="aurora-strip-title" class="aurora-strip-title">Polární záře nad Oulu</span>
+            <span id="aurora-kp-badge" class="aurora-kp-badge">Kp --</span>
+          </div>
+          <div id="aurora-meter" class="aurora-meter" aria-hidden="true">
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+            <span class="kp-seg"></span>
+          </div>
+          <p id="aurora-status-text" class="aurora-status-text">Kontroluji sluneční aktivitu…</p>
         </div>
       </div>
     </section>

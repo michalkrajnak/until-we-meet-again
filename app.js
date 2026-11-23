@@ -5,7 +5,17 @@
   const allPhotosRaw = Array.isArray(window.REUNION_PHOTOS) ? window.REUNION_PHOTOS : [];
 
   const urlParams = new URLSearchParams(window.location.search);
-  const previewReunion = urlParams.get('preview') === 'reunion';
+  const previewMode = (urlParams.get('preview') || '').toLowerCase();
+  const previewReunion = previewMode === 'reunion';
+
+  const PREVIEW_TIMESTAMPS = {
+    advent1: new Date('2026-11-29T12:00:00+01:00').getTime(),
+    anniversary: new Date('2026-12-05T12:00:00+01:00').getTime(),
+    mikulas: new Date('2026-12-06T12:00:00+01:00').getTime(),
+    nameday: new Date('2026-12-12T12:00:00+01:00').getTime(),
+    advent3: new Date('2026-12-13T12:00:00+01:00').getTime(),
+    advent4: new Date('2026-12-20T12:00:00+01:00').getTime(),
+  };
 
   // Resolve initial language (?lang= > localStorage > config.defaultLang ('cs'))
   const storedLang = (() => {
@@ -58,6 +68,76 @@
     progressStartEndpoint: document.getElementById('progress-start-endpoint'),
     progressEndEndpoint: document.getElementById('progress-end-endpoint'),
     daysStat: document.getElementById('days-stat'),
+    festiveStripLabel: document.getElementById('festive-strip-label'),
+    festiveMilestones: document.getElementById('festive-milestones'),
+    specialDayBanner: document.getElementById('special-day-banner'),
+    specialDayIcon: document.getElementById('special-day-icon'),
+    specialDayBadge: document.getElementById('special-day-badge'),
+    specialDayText: document.getElementById('special-day-text'),
+    anniversaryCard: document.getElementById('anniversary-card'),
+    anniversarySealed: document.getElementById('anniversary-sealed'),
+    anniversaryBadge: document.getElementById('anniversary-badge'),
+    anniversarySealedTitle: document.getElementById('anniversary-sealed-title'),
+    anniversarySealedSubtitle: document.getElementById('anniversary-sealed-subtitle'),
+    anniversaryOpenBtn: document.getElementById('anniversary-open-btn'),
+    anniversaryOpenLabel: document.getElementById('anniversary-open-label'),
+    anniversaryLetter: document.getElementById('anniversary-letter'),
+    anniversaryPhotoWrap: document.getElementById('anniversary-photo-wrap'),
+    anniversaryPhoto: document.getElementById('anniversary-photo'),
+    anniversaryLetterBadge: document.getElementById('anniversary-letter-badge'),
+    anniversaryHeading: document.getElementById('anniversary-heading'),
+    anniversaryParagraphs: document.getElementById('anniversary-paragraphs'),
+    anniversarySignature: document.getElementById('anniversary-signature'),
+    anniversaryCloseBtn: document.getElementById('anniversary-close-btn'),
+    nameDayCard: document.getElementById('nameday-card'),
+    nameDaySealed: document.getElementById('nameday-sealed'),
+    nameDayBadge: document.getElementById('nameday-badge'),
+    nameDaySealedTitle: document.getElementById('nameday-sealed-title'),
+    nameDaySealedSubtitle: document.getElementById('nameday-sealed-subtitle'),
+    nameDayOpenBtn: document.getElementById('nameday-open-btn'),
+    nameDayOpenLabel: document.getElementById('nameday-open-label'),
+    nameDayLetter: document.getElementById('nameday-letter'),
+    nameDayPhotoWrap: document.getElementById('nameday-photo-wrap'),
+    nameDayPhoto: document.getElementById('nameday-photo'),
+    nameDayLetterBadge: document.getElementById('nameday-letter-badge'),
+    nameDayHeading: document.getElementById('nameday-heading'),
+    nameDayParagraphs: document.getElementById('nameday-paragraphs'),
+    nameDaySignature: document.getElementById('nameday-signature'),
+    nameDayCloseBtn: document.getElementById('nameday-close-btn'),
+    twoWorldsKicker: document.getElementById('two-worlds-kicker'),
+    twoWorldsHeading: document.getElementById('two-worlds-heading'),
+    distanceValue: document.getElementById('distance-value'),
+    distanceLabel: document.getElementById('distance-label'),
+    worldOuluName: document.getElementById('world-oulu-name'),
+    worldOuluSub: document.getElementById('world-oulu-sub'),
+    worldOuluTime: document.getElementById('world-oulu-time'),
+    worldOuluIcon: document.getElementById('world-oulu-icon'),
+    worldOuluTemp: document.getElementById('world-oulu-temp'),
+    worldOuluDesc: document.getElementById('world-oulu-desc'),
+    worldOuluFeels: document.getElementById('world-oulu-feels'),
+    worldOuluDaylightLabel: document.getElementById('world-oulu-daylight-label'),
+    worldOuluDaylightVal: document.getElementById('world-oulu-daylight-val'),
+    worldOuluDaylightFill: document.getElementById('world-oulu-daylight-fill'),
+    worldOuluSunrise: document.getElementById('world-oulu-sunrise'),
+    worldOuluSunset: document.getElementById('world-oulu-sunset'),
+    worldHomeName: document.getElementById('world-home-name'),
+    worldHomeSub: document.getElementById('world-home-sub'),
+    worldHomeTime: document.getElementById('world-home-time'),
+    worldHomeIcon: document.getElementById('world-home-icon'),
+    worldHomeTemp: document.getElementById('world-home-temp'),
+    worldHomeDesc: document.getElementById('world-home-desc'),
+    worldHomeFeels: document.getElementById('world-home-feels'),
+    worldHomeDaylightLabel: document.getElementById('world-home-daylight-label'),
+    worldHomeDaylightVal: document.getElementById('world-home-daylight-val'),
+    worldHomeDaylightFill: document.getElementById('world-home-daylight-fill'),
+    worldHomeSunrise: document.getElementById('world-home-sunrise'),
+    worldHomeSunset: document.getElementById('world-home-sunset'),
+    daylightCompare: document.getElementById('daylight-compare'),
+    auroraLiveStrip: document.getElementById('aurora-live-strip'),
+    auroraStripTitle: document.getElementById('aurora-strip-title'),
+    auroraKpBadge: document.getElementById('aurora-kp-badge'),
+    auroraMeter: document.getElementById('aurora-meter'),
+    auroraStatusText: document.getElementById('aurora-status-text'),
     galleryKicker: document.getElementById('gallery-kicker'),
     galleryHeading: document.getElementById('gallery-heading'),
     categoryFilters: document.getElementById('category-filters'),
@@ -145,6 +225,40 @@
     minute: '2-digit',
     hour12: false,
   });
+  const ouluDateKeyFmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: config.origin.timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const homeDateKeyFmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: config.home.timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  function getEffectiveNowMs() {
+    if (previewReunion) return targetMs + 1000;
+    if (PREVIEW_TIMESTAMPS[previewMode]) return PREVIEW_TIMESTAMPS[previewMode];
+    return Date.now();
+  }
+
+  function getDateKeys(nowMs) {
+    const dt = new Date(nowMs);
+    return {
+      oulu: ouluDateKeyFmt.format(dt),
+      home: homeDateKeyFmt.format(dt),
+    };
+  }
+
+  function isDateKeyToday(dateKey, keys) {
+    return Boolean(dateKey) && (keys.oulu === dateKey || keys.home === dateKey);
+  }
+
+  function isDateKeyReached(dateKey, keys) {
+    return Boolean(dateKey) && (keys.oulu >= dateKey || keys.home >= dateKey);
+  }
 
   function formatTargetDate(lang) {
     const locale = lang === 'cs' ? 'cs-CZ' : 'en-US';
@@ -175,28 +289,304 @@
     node.classList.add('tick-pop');
   }
 
+  let anniversaryLetterOpen = false;
+  let anniversaryManuallyOpened = false;
+  let nameDayLetterOpen = false;
+  let nameDayManuallyOpened = false;
+
+  function setAnniversaryLetterState(isOpen) {
+    anniversaryLetterOpen = isOpen;
+    if (!el.anniversarySealed || !el.anniversaryLetter) return;
+    el.anniversarySealed.hidden = isOpen;
+    el.anniversaryLetter.hidden = !isOpen;
+    el.anniversaryCard.classList.toggle('is-opened', isOpen);
+  }
+
+  function setNameDayLetterState(isOpen) {
+    nameDayLetterOpen = isOpen;
+    if (!el.nameDaySealed || !el.nameDayLetter) return;
+    el.nameDaySealed.hidden = isOpen;
+    el.nameDayLetter.hidden = !isOpen;
+    el.nameDayCard.classList.toggle('is-opened', isOpen);
+  }
+
+  function renderAnniversaryCopy() {
+    if (!el.anniversaryCard) return;
+    const copy = t().anniversary;
+    if (!copy) return;
+
+    el.anniversaryBadge.textContent = copy.badge;
+    el.anniversaryLetterBadge.textContent = copy.badge;
+    el.anniversarySealedTitle.textContent = copy.sealedTitle;
+    el.anniversarySealedSubtitle.textContent = copy.sealedSubtitle;
+    el.anniversaryOpenLabel.textContent = copy.openBtn;
+    el.anniversaryCloseBtn.textContent = copy.closeBtn;
+    el.anniversaryHeading.textContent = copy.heading;
+    el.anniversarySignature.textContent = copy.signature;
+
+    el.anniversaryParagraphs.innerHTML = '';
+    copy.paragraphs.forEach((text) => {
+      const p = document.createElement('p');
+      p.textContent = text;
+      el.anniversaryParagraphs.appendChild(p);
+    });
+
+    const photoSrc = config.anniversary && config.anniversary.photo;
+    if (photoSrc) {
+      el.anniversaryPhotoWrap.hidden = false;
+      el.anniversaryPhoto.src = photoSrc;
+      el.anniversaryPhoto.alt = copy.heading;
+    } else {
+      el.anniversaryPhotoWrap.hidden = true;
+    }
+  }
+
+  function renderNameDayCopy() {
+    if (!el.nameDayCard) return;
+    const copy = t().nameDay;
+    if (!copy) return;
+
+    el.nameDayBadge.textContent = copy.badge;
+    el.nameDayLetterBadge.textContent = copy.badge;
+    el.nameDaySealedTitle.textContent = copy.sealedTitle;
+    el.nameDaySealedSubtitle.textContent = copy.sealedSubtitle;
+    el.nameDayOpenLabel.textContent = copy.openBtn;
+    el.nameDayCloseBtn.textContent = copy.closeBtn;
+    el.nameDayHeading.textContent = copy.heading;
+    el.nameDaySignature.textContent = copy.signature;
+
+    el.nameDayParagraphs.innerHTML = '';
+    copy.paragraphs.forEach((text) => {
+      const p = document.createElement('p');
+      p.textContent = text;
+      el.nameDayParagraphs.appendChild(p);
+    });
+
+    const photoSrc = config.nameDay && config.nameDay.photo;
+    if (photoSrc) {
+      el.nameDayPhotoWrap.hidden = false;
+      el.nameDayPhoto.src = photoSrc;
+      el.nameDayPhoto.alt = copy.heading;
+    } else {
+      el.nameDayPhotoWrap.hidden = true;
+    }
+  }
+
+  function renderSpecialMoments(nowMs) {
+    const strings = t();
+    const keys = getDateKeys(nowMs);
+    const annivKey = config.anniversary && config.anniversary.dateKey;
+    const isAnnivToday = isDateKeyToday(annivKey, keys);
+    const isAnnivUnlocked = isDateKeyReached(annivKey, keys);
+
+    const nameDayKey = config.nameDay && config.nameDay.dateKey;
+    const isNameDayToday = isDateKeyToday(nameDayKey, keys);
+    const isNameDayUnlocked = isDateKeyReached(nameDayKey, keys);
+
+    // Subtle aurora shifts on Dec 5 (Anniversary) and Dec 12 (Name Day)
+    document.body.classList.toggle('anniversary-live', isAnnivToday);
+    document.body.classList.toggle('nameday-live', isNameDayToday && !isAnnivToday);
+
+    // Show Anniversary card automatically on Dec 5 (or if manually re-opened after Dec 5)
+    const showAnnivCard = isAnnivToday || (isAnnivUnlocked && anniversaryManuallyOpened);
+    if (el.anniversaryCard) {
+      el.anniversaryCard.hidden = !showAnnivCard;
+    }
+
+    // Show Name Day card automatically on Dec 12 (or if manually re-opened after Dec 12)
+    const showNameDayCard = isNameDayToday || (isNameDayUnlocked && nameDayManuallyOpened);
+    if (el.nameDayCard) {
+      el.nameDayCard.hidden = !showNameDayCard;
+    }
+
+    // Festive Day Spotlight Banner (Advent Sundays & St. Nicholas)
+    const festiveOrder = ['advent1', 'mikulas', 'advent3', 'advent4'];
+    const activeSpecial = config.milestones.find(
+      (m) => festiveOrder.includes(m.id) && isDateKeyToday(m.dateKey, keys)
+    );
+
+    if (el.specialDayBanner) {
+      if (
+        activeSpecial &&
+        strings.specialDays &&
+        strings.specialDays[activeSpecial.id] &&
+        !isAnnivToday &&
+        !isNameDayToday
+      ) {
+        const dayCopy = strings.specialDays[activeSpecial.id];
+        el.specialDayBanner.hidden = false;
+        el.specialDayBanner.dataset.kind = activeSpecial.kind || 'advent';
+        el.specialDayIcon.textContent = activeSpecial.icon || '🕯';
+        el.specialDayBadge.textContent = dayCopy.badge;
+        el.specialDayText.textContent = dayCopy.text;
+      } else {
+        el.specialDayBanner.hidden = true;
+      }
+    }
+  }
+
   function renderMilestones(nowMs) {
+    const strings = t();
+    const keys = getDateKeys(nowMs);
     const totalDuration = Math.max(1, targetMs - startMs);
     el.progressMilestones.innerHTML = '';
 
     config.milestones.forEach((m, idx) => {
       const mTime = new Date(m.date).getTime();
       const pct = Math.min(100, Math.max(0, ((mTime - startMs) / totalDuration) * 100));
-      const isReached = nowMs >= mTime;
+      const isToday = isDateKeyToday(m.dateKey, keys);
+      const isReached = m.dateKey ? isDateKeyReached(m.dateKey, keys) : nowMs >= mTime;
+      const labelText = m.label[currentLang] || m.label.cs;
 
       const dot = document.createElement('span');
-      dot.className = `milestone-dot${isReached ? ' reached' : ''}`;
+      const kindClass = m.kind ? ` milestone-dot--${m.kind}` : '';
+      dot.className = `milestone-dot${kindClass}${isReached ? ' reached' : ''}${isToday ? ' is-today' : ''}`;
       dot.style.left = `${pct}%`;
+      dot.title = labelText;
 
-      const label = document.createElement('span');
-      let edgeClass = '';
-      if (idx === 0) edgeClass = ' first';
-      else if (idx === config.milestones.length - 1) edgeClass = ' last';
-      label.className = `milestone-label${edgeClass}`;
-      label.style.left = `${pct}%`;
-      label.textContent = m.label[currentLang] || m.label.cs;
+      el.progressMilestones.appendChild(dot);
 
-      el.progressMilestones.append(dot, label);
+      if (m.showTrackLabel) {
+        const label = document.createElement('span');
+        let edgeClass = '';
+        if (idx === 0) edgeClass = ' first';
+        else if (idx === config.milestones.length - 1) edgeClass = ' last';
+        label.className = `milestone-label${edgeClass}`;
+        label.style.left = `${pct}%`;
+        label.textContent = labelText;
+        el.progressMilestones.appendChild(label);
+      }
+    });
+
+    // Render festive December milestones strip (no overlap on desktop or mobile)
+    if (!el.festiveMilestones) return;
+    el.festiveMilestones.innerHTML = '';
+
+    const festiveItems = config.milestones.filter((m) => m.festive);
+    let foundNextUpcoming = false;
+
+    festiveItems.forEach((m) => {
+      const mTime = new Date(m.date).getTime();
+      const isToday = isDateKeyToday(m.dateKey, keys);
+      const isReached = !isToday && (m.dateKey ? isDateKeyReached(m.dateKey, keys) : nowMs >= mTime);
+      const isUpcoming = !isToday && !isReached;
+      const isNext = isUpcoming && !foundNextUpcoming;
+      if (isNext) foundNextUpcoming = true;
+
+      const isAnniversaryClickable = m.id === 'anniversary' && (isToday || isReached);
+      const isNameDayClickable = m.id === 'nameday' && (isToday || isReached);
+      const isClickable = isAnniversaryClickable || isNameDayClickable;
+      const chip = document.createElement(isClickable ? 'button' : 'div');
+      if (isAnniversaryClickable) {
+        chip.type = 'button';
+        chip.title = strings.milestoneOpenAnniversary;
+        chip.addEventListener('click', () => {
+          anniversaryManuallyOpened = true;
+          renderSpecialMoments(getEffectiveNowMs());
+          setAnniversaryLetterState(true);
+          if (el.anniversaryCard) {
+            el.anniversaryCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      } else if (isNameDayClickable) {
+        chip.type = 'button';
+        chip.title = strings.milestoneOpenNameDay;
+        chip.addEventListener('click', () => {
+          nameDayManuallyOpened = true;
+          renderSpecialMoments(getEffectiveNowMs());
+          setNameDayLetterState(true);
+          if (el.nameDayCard) {
+            el.nameDayCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      }
+
+      chip.setAttribute('role', 'listitem');
+      chip.className = [
+        'festive-chip',
+        `festive-chip--${m.kind || 'advent'}`,
+        isToday ? 'is-today' : '',
+        isReached ? 'is-reached' : '',
+        isNext ? 'is-next' : '',
+        isClickable ? 'is-clickable' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'festive-chip-icon';
+      iconSpan.setAttribute('aria-hidden', 'true');
+      iconSpan.textContent = isReached ? '✓' : m.icon || '✦';
+
+      const textWrap = document.createElement('span');
+      textWrap.className = 'festive-chip-text';
+
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'festive-chip-date';
+      dateSpan.textContent = (m.shortDate && m.shortDate[currentLang]) || '';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'festive-chip-title';
+      titleSpan.textContent = (m.shortLabel && m.shortLabel[currentLang]) || m.label[currentLang];
+
+      textWrap.append(dateSpan, titleSpan);
+      chip.append(iconSpan, textWrap);
+
+      if (isToday) {
+        const tag = document.createElement('span');
+        tag.className = 'festive-chip-tag is-today-tag';
+        tag.textContent = strings.milestoneToday;
+        chip.appendChild(tag);
+      } else if (isNext) {
+        const daysUntil = Math.max(1, Math.ceil((mTime - nowMs) / 86400000));
+        const word = pluralizeUnit(currentLang, daysUntil, 'dayLower');
+        const tag = document.createElement('span');
+        tag.className = 'festive-chip-tag';
+        tag.textContent = strings.milestoneInDays(daysUntil, word);
+        chip.appendChild(tag);
+      }
+
+      el.festiveMilestones.appendChild(chip);
+    });
+  }
+
+  if (el.anniversaryOpenBtn) {
+    el.anniversaryOpenBtn.addEventListener('click', () => {
+      setAnniversaryLetterState(true);
+    });
+  }
+
+  if (el.anniversaryCloseBtn) {
+    el.anniversaryCloseBtn.addEventListener('click', () => {
+      const keys = getDateKeys(getEffectiveNowMs());
+      const annivKey = config.anniversary && config.anniversary.dateKey;
+      if (isDateKeyToday(annivKey, keys)) {
+        setAnniversaryLetterState(false);
+      } else {
+        anniversaryManuallyOpened = false;
+        setAnniversaryLetterState(false);
+        renderSpecialMoments(getEffectiveNowMs());
+      }
+    });
+  }
+
+  if (el.nameDayOpenBtn) {
+    el.nameDayOpenBtn.addEventListener('click', () => {
+      setNameDayLetterState(true);
+    });
+  }
+
+  if (el.nameDayCloseBtn) {
+    el.nameDayCloseBtn.addEventListener('click', () => {
+      const keys = getDateKeys(getEffectiveNowMs());
+      const nameDayKey = config.nameDay && config.nameDay.dateKey;
+      if (isDateKeyToday(nameDayKey, keys)) {
+        setNameDayLetterState(false);
+      } else {
+        nameDayManuallyOpened = false;
+        setNameDayLetterState(false);
+        renderSpecialMoments(getEffectiveNowMs());
+      }
     });
   }
 
@@ -210,13 +600,17 @@
     }
 
     const strings = t();
-    const nowMs = previewReunion ? targetMs + 1000 : Date.now();
+    const nowMs = getEffectiveNowMs();
     const diffMs = targetMs - nowMs;
 
-    // Live dual clocks
+    // Live dual clocks (Hero & Two Worlds card)
     const nowDate = new Date();
-    el.clockOulu.textContent = ouluClockFmt.format(nowDate);
-    el.clockHome.textContent = homeClockFmt.format(nowDate);
+    const ouluTimeStr = ouluClockFmt.format(nowDate);
+    const homeTimeStr = homeClockFmt.format(nowDate);
+    el.clockOulu.textContent = ouluTimeStr;
+    el.clockHome.textContent = homeTimeStr;
+    if (el.worldOuluTime) el.worldOuluTime.textContent = ouluTimeStr;
+    if (el.worldHomeTime) el.worldHomeTime.textContent = homeTimeStr;
 
     // Countdown
     if (diffMs <= 0) {
@@ -278,10 +672,12 @@
       el.daysStat.textContent = strings.daysStat(daysDone, daysLeft, doneWord, leftWord);
     }
 
-    const milestoneKey = `${currentLang}:${Math.floor(nowMs / 86400000)}`;
+    const keys = getDateKeys(nowMs);
+    const milestoneKey = `${currentLang}:${keys.oulu}:${keys.home}`;
     if (milestoneKey !== milestonesRenderedKey) {
       milestonesRenderedKey = milestoneKey;
       renderMilestones(nowMs);
+      renderSpecialMoments(nowMs);
     }
 
     const msToNextSecond = 1000 - (Date.now() % 1000);
@@ -714,7 +1110,12 @@
     }
   });
 
+  ['play', 'pause', 'ended', 'volumechange'].forEach((evtName) => {
+    el.lightboxVideo.addEventListener(evtName, () => syncMusicDucking());
+  });
+
   window.addEventListener('keydown', (e) => {
+    if (el.welcomeGate && !el.welcomeGate.hidden) return;
     if (e.key === 'ArrowLeft') {
       showSlide(currentIndex - 1, { scrollThumb: true });
     } else if (e.key === 'ArrowRight') {
@@ -887,6 +1288,374 @@
   });
 
   // =========================================================
+  // Two Worlds Under One Sky (Oulu vs. Brno Live Weather, Daylight & Aurora)
+  // =========================================================
+  const CACHE_TTL_MS = 15 * 60 * 1000;
+  const twoWorldsState = {
+    oulu: null,
+    home: null,
+    weatherFailed: false,
+    auroraKp: null,
+    auroraFailed: false,
+  };
+
+  function readSessionCache(key) {
+    try {
+      const raw = window.sessionStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+      return parsed.data;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeSessionCache(key, data) {
+    try {
+      window.sessionStorage.setItem(key, JSON.stringify({ ts: Date.now(), data }));
+    } catch {
+      // ignore storage restrictions
+    }
+  }
+
+  function computeFallbackSolar(lat, lon, timeZone, refDate) {
+    const startOfYear = Date.UTC(refDate.getUTCFullYear(), 0, 0);
+    const dayOfYear = Math.floor((refDate.getTime() - startOfYear) / 86400000);
+    const deg2rad = Math.PI / 180;
+    const rad2deg = 180 / Math.PI;
+
+    const gamma = ((2 * Math.PI) / 365) * (dayOfYear - 1);
+    const eqTime =
+      229.18 *
+      (0.000075 +
+        0.001868 * Math.cos(gamma) -
+        0.032077 * Math.sin(gamma) -
+        0.014615 * Math.cos(2 * gamma) -
+        0.040849 * Math.sin(2 * gamma));
+    const decl =
+      0.006918 -
+      0.399912 * Math.cos(gamma) +
+      0.070257 * Math.sin(gamma) -
+      0.006758 * Math.cos(2 * gamma) +
+      0.000907 * Math.sin(2 * gamma) -
+      0.002697 * Math.cos(3 * gamma) +
+      0.00148 * Math.sin(3 * gamma);
+
+    const latRad = lat * deg2rad;
+    const cosHa =
+      Math.cos(90.833 * deg2rad) / (Math.cos(latRad) * Math.cos(decl)) -
+      Math.tan(latRad) * Math.tan(decl);
+
+    if (cosHa >= 1) {
+      return { sunriseStr: '--:--', sunsetStr: '--:--', sunriseMin: 720, daylightSec: 0 };
+    }
+    if (cosHa <= -1) {
+      return { sunriseStr: '00:00', sunsetStr: '24:00', sunriseMin: 0, daylightSec: 86400 };
+    }
+
+    const haDeg = Math.acos(cosHa) * rad2deg;
+    const solarNoonUtcMin = 720 - 4 * lon - eqTime;
+    const sunriseUtcMin = solarNoonUtcMin - 4 * haDeg;
+    const sunsetUtcMin = solarNoonUtcMin + 4 * haDeg;
+
+    const baseUtc = Date.UTC(refDate.getUTCFullYear(), refDate.getUTCMonth(), refDate.getUTCDate());
+    const sunriseDate = new Date(baseUtc + sunriseUtcMin * 60000);
+    const sunsetDate = new Date(baseUtc + sunsetUtcMin * 60000);
+
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    const sunriseStr = fmt.format(sunriseDate);
+    const sunsetStr = fmt.format(sunsetDate);
+    const [srH, srM] = sunriseStr.split(':').map(Number);
+
+    return {
+      sunriseStr,
+      sunsetStr,
+      sunriseMin: srH * 60 + srM,
+      daylightSec: Math.max(0, Math.round((sunsetUtcMin - sunriseUtcMin) * 60)),
+    };
+  }
+
+  function mapWeatherCode(code, isDay) {
+    const codes = t().twoWorlds.weatherCodes;
+    const sunOrMoon = isDay ? '☀' : '☾';
+    if (code === 0) return { icon: sunOrMoon, label: codes.clear };
+    if (code === 1) return { icon: isDay ? '🌤' : '☾', label: codes.mostlyClear };
+    if (code === 2) return { icon: isDay ? '⛅' : '☁', label: codes.partlyCloudy };
+    if (code === 3) return { icon: '☁', label: codes.overcast };
+    if (code === 45 || code === 48) return { icon: '🌫', label: codes.fog };
+    if (code >= 51 && code <= 55) return { icon: '🌦', label: codes.drizzle };
+    if (code === 56 || code === 57) return { icon: '🌧', label: codes.freezingDrizzle };
+    if (code >= 61 && code <= 65) return { icon: '🌧', label: codes.rain };
+    if (code === 66 || code === 67) return { icon: '🌧', label: codes.freezingRain };
+    if (code >= 71 && code <= 75) return { icon: '❄', label: codes.snow };
+    if (code === 77) return { icon: '❄', label: codes.snowGrains };
+    if (code >= 80 && code <= 82) return { icon: '🌦', label: codes.showers };
+    if (code === 85 || code === 86) return { icon: '🌨', label: codes.snowShowers };
+    if (code >= 95) return { icon: '⛈', label: codes.thunderstorm };
+    return { icon: '☁', label: codes.overcast };
+  }
+
+  function parseIsoHHMM(isoStr) {
+    if (!isoStr || typeof isoStr !== 'string') return null;
+    const match = isoStr.match(/T(\d{2}):(\d{2})/);
+    if (!match) return null;
+    const hh = Number(match[1]);
+    const mm = Number(match[2]);
+    return { str: `${pad2(hh)}:${pad2(mm)}`, minutes: hh * 60 + mm };
+  }
+
+  function formatDurationHM(totalSec) {
+    const totalMin = Math.max(0, Math.round(totalSec / 60));
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    return { h, m, text: t().twoWorlds.daylightDuration(h, m) };
+  }
+
+  function renderCitySky(prefix, data, fallbackSolar) {
+    const tw = t().twoWorlds;
+    const iconEl = prefix === 'oulu' ? el.worldOuluIcon : el.worldHomeIcon;
+    const tempEl = prefix === 'oulu' ? el.worldOuluTemp : el.worldHomeTemp;
+    const descEl = prefix === 'oulu' ? el.worldOuluDesc : el.worldHomeDesc;
+    const feelsEl = prefix === 'oulu' ? el.worldOuluFeels : el.worldHomeFeels;
+    const dlValEl = prefix === 'oulu' ? el.worldOuluDaylightVal : el.worldHomeDaylightVal;
+    const dlFillEl = prefix === 'oulu' ? el.worldOuluDaylightFill : el.worldHomeDaylightFill;
+    const srEl = prefix === 'oulu' ? el.worldOuluSunrise : el.worldHomeSunrise;
+    const ssEl = prefix === 'oulu' ? el.worldOuluSunset : el.worldHomeSunset;
+
+    if (!iconEl || !tempEl) return;
+
+    if (data && typeof data.temp === 'number') {
+      const w = mapWeatherCode(data.code, data.isDay !== 0);
+      iconEl.textContent = w.icon;
+      tempEl.textContent = `${Math.round(data.temp)}°C`;
+      descEl.textContent = w.label;
+      feelsEl.textContent =
+        typeof data.apparent === 'number' ? tw.feelsLike(Math.round(data.apparent)) : '';
+    } else if (twoWorldsState.weatherFailed) {
+      tempEl.textContent = '--°';
+      descEl.textContent = tw.weatherUnavailable;
+      feelsEl.textContent = '';
+    } else {
+      descEl.textContent = tw.weatherLoading;
+    }
+
+    const solar = (data && data.solar) || fallbackSolar;
+    if (solar) {
+      const dur = formatDurationHM(solar.daylightSec);
+      dlValEl.textContent = dur.text;
+      srEl.textContent = `☀ ${solar.sunriseStr}`;
+      ssEl.textContent = `☾ ${solar.sunsetStr}`;
+
+      const leftPct = Math.max(0, Math.min(92, (solar.sunriseMin / 1440) * 100));
+      const widthPct = Math.max(4, Math.min(100 - leftPct, (solar.daylightSec / 86400) * 100));
+      dlFillEl.style.left = `${leftPct.toFixed(1)}%`;
+      dlFillEl.style.width = `${widthPct.toFixed(1)}%`;
+    }
+  }
+
+  function renderAuroraUI() {
+    if (!el.auroraLiveStrip) return;
+    const tw = t().twoWorlds;
+    el.auroraStripTitle.textContent = tw.auroraTitle;
+
+    if (twoWorldsState.auroraFailed) {
+      el.auroraLiveStrip.hidden = true;
+      return;
+    }
+
+    el.auroraLiveStrip.hidden = false;
+
+    if (typeof twoWorldsState.auroraKp !== 'number') {
+      el.auroraKpBadge.textContent = 'Kp --';
+      el.auroraStatusText.textContent = tw.auroraLoading;
+      return;
+    }
+
+    const kp = twoWorldsState.auroraKp;
+    const kpDisplay = Number.isInteger(kp) ? String(kp) : kp.toFixed(1);
+    el.auroraKpBadge.textContent = tw.auroraKpLabel(kpDisplay);
+
+    let level = 'quiet';
+    if (kp >= 5) level = 'storm';
+    else if (kp >= 3) level = 'active';
+    else if (kp >= 2) level = 'mild';
+
+    el.auroraLiveStrip.dataset.level = level;
+    el.auroraStatusText.textContent = tw.auroraLevels[level];
+
+    const litCount = Math.max(1, Math.min(9, Math.round(kp)));
+    const segs = el.auroraMeter.querySelectorAll('.kp-seg');
+    segs.forEach((seg, idx) => {
+      seg.classList.toggle('is-lit', idx < litCount);
+    });
+  }
+
+  function renderTwoWorldsUI() {
+    if (!el.twoWorldsHeading) return;
+    const tw = t().twoWorlds;
+
+    el.twoWorldsKicker.textContent = tw.kicker;
+    el.twoWorldsHeading.textContent = tw.title;
+    if (el.distanceValue && config.distanceKm) {
+      const formattedDist = new Intl.NumberFormat(currentLang === 'cs' ? 'cs-CZ' : 'en-US').format(
+        config.distanceKm
+      );
+      el.distanceValue.textContent = `${formattedDist} km`;
+    }
+    if (el.distanceLabel) el.distanceLabel.textContent = tw.distanceLabel;
+
+    el.worldOuluName.textContent = tw.ouluName;
+    el.worldOuluSub.textContent = tw.ouluSub;
+    el.worldOuluDaylightLabel.textContent = tw.daylightLabel;
+
+    el.worldHomeName.textContent = tw.homeName;
+    el.worldHomeSub.textContent = tw.homeSub;
+    el.worldHomeDaylightLabel.textContent = tw.daylightLabel;
+
+    const refDate = new Date(getEffectiveNowMs());
+    const ouluFallback = computeFallbackSolar(
+      config.origin.lat,
+      config.origin.lon,
+      config.origin.timeZone,
+      refDate
+    );
+    const homeFallback = computeFallbackSolar(
+      config.home.lat,
+      config.home.lon,
+      config.home.timeZone,
+      refDate
+    );
+
+    renderCitySky('oulu', twoWorldsState.oulu, ouluFallback);
+    renderCitySky('home', twoWorldsState.home, homeFallback);
+
+    const ouluSec = (twoWorldsState.oulu && twoWorldsState.oulu.solar
+      ? twoWorldsState.oulu.solar.daylightSec
+      : ouluFallback.daylightSec);
+    const homeSec = (twoWorldsState.home && twoWorldsState.home.solar
+      ? twoWorldsState.home.solar.daylightSec
+      : homeFallback.daylightSec);
+
+    if (el.daylightCompare && homeSec > ouluSec + 600) {
+      const diffMin = Math.round((homeSec - ouluSec) / 60);
+      const diffH = Math.floor(diffMin / 60);
+      const diffM = diffMin % 60;
+      el.daylightCompare.textContent = tw.daylightCompare(diffH, diffM);
+      el.daylightCompare.hidden = false;
+    } else if (el.daylightCompare) {
+      el.daylightCompare.hidden = true;
+    }
+
+    renderAuroraUI();
+  }
+
+  async function fetchCityWeather(lat, lon) {
+    const url =
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      `&current=temperature_2m,apparent_temperature,weather_code,is_day` +
+      `&daily=sunrise,sunset,daylight_duration&timezone=auto&forecast_days=1`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Weather fetch failed');
+    const json = await res.json();
+    const cur = json.current || {};
+    const daily = json.daily || {};
+    const sr = parseIsoHHMM(daily.sunrise && daily.sunrise[0]);
+    const ss = parseIsoHHMM(daily.sunset && daily.sunset[0]);
+    const daylightSec = daily.daylight_duration && daily.daylight_duration[0];
+
+    return {
+      temp: cur.temperature_2m,
+      apparent: cur.apparent_temperature,
+      code: cur.weather_code,
+      isDay: cur.is_day,
+      solar:
+        sr && ss && typeof daylightSec === 'number'
+          ? {
+              sunriseStr: sr.str,
+              sunsetStr: ss.str,
+              sunriseMin: sr.minutes,
+              daylightSec,
+            }
+          : null,
+    };
+  }
+
+  async function fetchAuroraKp() {
+    const res = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
+    if (!res.ok) throw new Error('Aurora fetch failed');
+    const rows = await res.json();
+    if (!Array.isArray(rows) || rows.length === 0) return null;
+
+    for (let i = rows.length - 1; i >= 0; i -= 1) {
+      const row = rows[i];
+      let val = NaN;
+      if (Array.isArray(row)) {
+        val = parseFloat(row[1]);
+      } else if (row && typeof row === 'object') {
+        val = parseFloat(row.Kp ?? row.kp ?? row.kp_index);
+      }
+      if (!Number.isNaN(val)) return val;
+    }
+    return null;
+  }
+
+  function initTwoWorlds() {
+    if (!el.twoWorldsHeading) return;
+    renderTwoWorldsUI();
+
+    const cachedWeather = readSessionCache('reunion-weather-v1');
+    if (cachedWeather && cachedWeather.oulu && cachedWeather.home) {
+      twoWorldsState.oulu = cachedWeather.oulu;
+      twoWorldsState.home = cachedWeather.home;
+      renderTwoWorldsUI();
+    } else {
+      Promise.all([
+        fetchCityWeather(config.origin.lat, config.origin.lon),
+        fetchCityWeather(config.home.lat, config.home.lon),
+      ])
+        .then(([oulu, home]) => {
+          twoWorldsState.oulu = oulu;
+          twoWorldsState.home = home;
+          twoWorldsState.weatherFailed = false;
+          writeSessionCache('reunion-weather-v1', { oulu, home });
+          renderTwoWorldsUI();
+        })
+        .catch(() => {
+          twoWorldsState.weatherFailed = true;
+          renderTwoWorldsUI();
+        });
+    }
+
+    const cachedKp = readSessionCache('reunion-aurora-kp-v1');
+    if (typeof cachedKp === 'number') {
+      twoWorldsState.auroraKp = cachedKp;
+      renderAuroraUI();
+    } else {
+      fetchAuroraKp()
+        .then((kp) => {
+          if (typeof kp === 'number') {
+            twoWorldsState.auroraKp = kp;
+            twoWorldsState.auroraFailed = false;
+            writeSessionCache('reunion-aurora-kp-v1', kp);
+          } else {
+            twoWorldsState.auroraFailed = true;
+          }
+          renderAuroraUI();
+        })
+        .catch(() => {
+          twoWorldsState.auroraFailed = true;
+          renderAuroraUI();
+        });
+    }
+  }
+
+  // =========================================================
   // Language Switching (CZ default / EN)
   // =========================================================
   function applyLanguage(lang) {
@@ -927,6 +1696,11 @@
     el.progressPercentLabel.textContent = strings.progressCompleteLabel;
     el.progressStartEndpoint.textContent = strings.progressStartEndpoint;
     el.progressEndEndpoint.textContent = strings.progressEndEndpoint;
+    if (el.festiveStripLabel) el.festiveStripLabel.textContent = strings.festiveStripLabel;
+
+    renderAnniversaryCopy();
+    renderNameDayCopy();
+    renderTwoWorldsUI();
 
     el.galleryKicker.textContent = strings.galleryKicker;
     el.galleryHeading.textContent = strings.galleryTitle;
@@ -1222,6 +1996,7 @@
   initWelcomeGate();
   initBackgroundMusic();
   applyLanguage(currentLang);
+  initTwoWorlds();
   applyMotionState();
   requestAnimationFrame(tickSlideshow);
 })();

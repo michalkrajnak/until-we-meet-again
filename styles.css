@@ -173,6 +173,32 @@ body.motion-paused .aurora {
   animation-play-state: paused;
 }
 
+/* Subtle romantic rose-gold aurora accent on Dec 5 Anniversary */
+body.anniversary-live .aurora-2 {
+  background:
+    radial-gradient(ellipse 46% 28% at 72% 36%, rgba(244, 114, 182, 0.68), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 28% 46%, rgba(251, 191, 36, 0.45), transparent 70%);
+}
+
+body.anniversary-live .aurora-3 {
+  background:
+    radial-gradient(ellipse 36% 22% at 46% 32%, rgba(249, 168, 212, 0.56), transparent 68%),
+    radial-gradient(ellipse 38% 24% at 80% 38%, rgba(46, 232, 218, 0.52), transparent 70%);
+}
+
+/* Sparkling turquoise & champagne-gold aurora accent on Dec 12 Name Day */
+body.nameday-live .aurora-2 {
+  background:
+    radial-gradient(ellipse 46% 28% at 72% 36%, rgba(46, 232, 218, 0.78), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 28% 46%, rgba(251, 191, 36, 0.52), transparent 70%);
+}
+
+body.nameday-live .aurora-3 {
+  background:
+    radial-gradient(ellipse 36% 22% at 46% 32%, rgba(254, 240, 138, 0.55), transparent 68%),
+    radial-gradient(ellipse 38% 24% at 80% 38%, rgba(56, 189, 248, 0.55), transparent 70%);
+}
+
 /* =========================================================
    Top Bar & Layout Shell
    ========================================================= */
@@ -845,6 +871,351 @@ body.reunion-live .target-meta {
 }
 
 /* =========================================================
+   Special Festive Day Banner (Advent Sundays & Mikuláš)
+   ========================================================= */
+.special-day-banner {
+  margin-bottom: 20px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-color: rgba(251, 191, 36, 0.36);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.11), rgba(7, 25, 36, 0.68));
+  box-shadow: var(--shadow-card), 0 0 36px rgba(251, 191, 36, 0.12), inset 0 1px 0 rgba(254, 243, 199, 0.18);
+}
+
+.special-day-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  background: radial-gradient(circle at 35% 35%, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.08));
+  border: 1px solid rgba(251, 191, 36, 0.42);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.22);
+}
+
+.special-day-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.special-day-badge {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fde68a;
+}
+
+.special-day-text {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+/* =========================================================
+   Dec 5 Anniversary Special Moment
+   ========================================================= */
+.anniversary-card {
+  margin-bottom: 20px;
+  padding: 32px 28px;
+  overflow: hidden;
+  border-color: rgba(244, 114, 182, 0.42);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 0%, rgba(244, 114, 182, 0.16), transparent 65%),
+    radial-gradient(ellipse 60% 60% at 85% 100%, rgba(251, 191, 36, 0.1), transparent 65%),
+    rgba(10, 21, 34, 0.72);
+  box-shadow: var(--shadow-card), 0 0 54px rgba(244, 114, 182, 0.16), inset 0 1px 0 rgba(251, 207, 232, 0.22);
+}
+
+.anniversary-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 12% auto 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 114, 182, 0.85), rgba(251, 191, 36, 0.65), transparent);
+}
+
+.anniversary-sealed {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.anniversary-seal {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.45rem;
+  color: #fce7f3;
+  background: radial-gradient(circle at 35% 30%, rgba(244, 114, 182, 0.55), rgba(190, 24, 93, 0.35));
+  border: 1px solid rgba(251, 207, 232, 0.55);
+  box-shadow: 0 0 32px rgba(244, 114, 182, 0.42);
+  animation: pulseDot 2.8s ease-in-out infinite;
+}
+
+.anniversary-badge {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f9a8d4;
+}
+
+.anniversary-sealed-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3.6vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #ffffff 15%, #fbcfe8 55%, #fde68a 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.anniversary-sealed-subtitle {
+  margin: 12px 0 22px;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.anniversary-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(251, 207, 232, 0.7);
+  background: linear-gradient(135deg, #ec4899 0%, #f472b6 55%, #fbbf24 100%);
+  color: #1c0814;
+  font: inherit;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(244, 114, 182, 0.36);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.anniversary-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(244, 114, 182, 0.48);
+  filter: brightness(1.05);
+}
+
+.anniversary-cta:focus-visible,
+.anniversary-close-btn:focus-visible,
+.festive-chip.is-clickable:focus-visible {
+  outline: 2px solid #f472b6;
+  outline-offset: 3px;
+}
+
+.anniversary-letter {
+  animation: letterFadeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes letterFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anniversary-letter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 270px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.anniversary-photo-wrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  border: 1px solid rgba(251, 207, 232, 0.28);
+  box-shadow: 0 22px 48px rgba(0, 6, 14, 0.62), 0 0 28px rgba(244, 114, 182, 0.16);
+  background: #07121f;
+}
+
+.anniversary-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 52%;
+  display: block;
+}
+
+.anniversary-letter-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.anniversary-heading {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.6vw, 2.35rem);
+  font-weight: 600;
+  color: #fdf2f8;
+}
+
+.anniversary-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anniversary-paragraphs p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #e6f2f6;
+}
+
+.anniversary-letter-footer {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(251, 207, 232, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.anniversary-signature {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #fbcfe8;
+}
+
+.anniversary-close-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(251, 207, 232, 0.26);
+  background: rgba(12, 24, 38, 0.55);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.anniversary-close-btn:hover {
+  border-color: rgba(244, 114, 182, 0.65);
+  color: #ffffff;
+}
+
+/* =========================================================
+   Dec 12 Name Day Special Moment (Turquoise & Champagne Gold)
+   ========================================================= */
+.nameday-card {
+  margin-bottom: 20px;
+  padding: 32px 28px;
+  overflow: hidden;
+  border-color: rgba(46, 232, 218, 0.45);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 0%, rgba(46, 232, 218, 0.16), transparent 65%),
+    radial-gradient(ellipse 65% 60% at 85% 100%, rgba(251, 191, 36, 0.14), transparent 65%),
+    rgba(6, 23, 33, 0.74);
+  box-shadow: var(--shadow-card), 0 0 54px rgba(46, 232, 218, 0.16), inset 0 1px 0 rgba(254, 243, 199, 0.22);
+}
+
+.nameday-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 12% auto 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(46, 232, 218, 0.85), rgba(251, 191, 36, 0.78), transparent);
+}
+
+.nameday-seal {
+  color: #fef9c3;
+  background: radial-gradient(circle at 35% 30%, rgba(46, 232, 218, 0.55), rgba(251, 191, 36, 0.35));
+  border-color: rgba(254, 240, 138, 0.58);
+  box-shadow: 0 0 32px rgba(46, 232, 218, 0.38), 0 0 18px rgba(251, 191, 36, 0.28);
+}
+
+.nameday-badge {
+  color: #fde68a;
+}
+
+.nameday-sealed-title {
+  background: linear-gradient(135deg, #ffffff 12%, #a5f8f2 52%, #fde68a 94%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.nameday-cta {
+  border-color: rgba(254, 240, 138, 0.68);
+  background: linear-gradient(135deg, #14d0d0 0%, #2ee8da 52%, #fbbf24 100%);
+  color: #04171f;
+  box-shadow: 0 12px 32px rgba(46, 232, 218, 0.34);
+}
+
+.nameday-cta:hover {
+  box-shadow: 0 16px 38px rgba(46, 232, 218, 0.46);
+}
+
+.nameday-cta:focus-visible,
+.nameday-close-btn:focus-visible {
+  outline: 2px solid var(--aurora-green);
+  outline-offset: 3px;
+}
+
+.nameday-photo-wrap {
+  aspect-ratio: 2 / 3;
+  border-color: rgba(165, 248, 242, 0.3);
+  box-shadow: 0 22px 48px rgba(0, 6, 14, 0.62), 0 0 28px rgba(46, 232, 218, 0.16);
+}
+
+.nameday-photo {
+  object-position: center 50%;
+}
+
+.nameday-heading {
+  color: #f0fdfa;
+}
+
+.nameday-letter-footer {
+  border-top-color: rgba(165, 248, 242, 0.18);
+}
+
+.nameday-signature {
+  color: #fde68a;
+}
+
+.nameday-close-btn {
+  border-color: rgba(165, 248, 242, 0.26);
+}
+
+.nameday-close-btn:hover {
+  border-color: rgba(46, 232, 218, 0.65);
+}
+
+/* =========================================================
    Erasmus Progress Card
    ========================================================= */
 .progress-card {
@@ -939,16 +1310,60 @@ body.reunion-live .target-meta {
 .milestone-dot {
   position: absolute;
   top: -19px;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .milestone-dot.reached {
   background: #ffffff;
-  box-shadow: 0 0 8px rgba(52, 245, 181, 0.8);
+  box-shadow: 0 0 8px rgba(52, 245, 181, 0.85);
+}
+
+.milestone-dot--advent,
+.milestone-dot--mikulas {
+  background: rgba(251, 191, 36, 0.45);
+}
+
+.milestone-dot--advent.reached,
+.milestone-dot--mikulas.reached {
+  background: #fde68a;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
+}
+
+.milestone-dot--anniversary {
+  width: 9px;
+  height: 9px;
+  top: -20px;
+  background: rgba(244, 114, 182, 0.72);
+  box-shadow: 0 0 10px rgba(244, 114, 182, 0.65);
+}
+
+.milestone-dot--anniversary.reached,
+.milestone-dot--anniversary.is-today {
+  background: #f9a8d4;
+  box-shadow: 0 0 14px rgba(244, 114, 182, 0.95);
+}
+
+.milestone-dot--nameday {
+  width: 9px;
+  height: 9px;
+  top: -20px;
+  background: rgba(46, 232, 218, 0.78);
+  box-shadow: 0 0 10px rgba(46, 232, 218, 0.7);
+}
+
+.milestone-dot--nameday.reached,
+.milestone-dot--nameday.is-today {
+  background: #5ef2e6;
+  box-shadow: 0 0 14px rgba(46, 232, 218, 0.98);
+}
+
+.milestone-dot.is-today {
+  transform: translateX(-50%) scale(1.35);
 }
 
 .milestone-label {
@@ -981,6 +1396,537 @@ body.reunion-live .target-meta {
 .days-stat {
   color: var(--text-secondary);
   font-weight: 500;
+}
+
+/* Festive December Milestones Strip */
+.festive-strip-wrap {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(164, 214, 255, 0.1);
+}
+
+.festive-strip-label {
+  margin: 0 0 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.festive-milestones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.festive-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(148, 200, 220, 0.14);
+  background: rgba(4, 18, 27, 0.5);
+  color: var(--text-secondary);
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.festive-chip-icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 0.84rem;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.24);
+  color: #fde68a;
+}
+
+.festive-chip--anniversary {
+  border-color: rgba(244, 114, 182, 0.28);
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(4, 18, 27, 0.56));
+}
+
+.festive-chip--anniversary .festive-chip-icon {
+  background: rgba(244, 114, 182, 0.2);
+  border-color: rgba(244, 114, 182, 0.42);
+  color: #f9a8d4;
+}
+
+.festive-chip--nameday {
+  border-color: rgba(46, 232, 218, 0.3);
+  background: linear-gradient(135deg, rgba(46, 232, 218, 0.11), rgba(251, 191, 36, 0.06), rgba(4, 18, 27, 0.56));
+}
+
+.festive-chip--nameday .festive-chip-icon {
+  background: rgba(46, 232, 218, 0.18);
+  border-color: rgba(46, 232, 218, 0.44);
+  color: #a5f8f2;
+}
+
+.festive-chip--nameday.is-today {
+  border-color: rgba(46, 232, 218, 0.72);
+  background: linear-gradient(135deg, rgba(46, 232, 218, 0.22), rgba(251, 191, 36, 0.12), rgba(7, 25, 36, 0.74));
+  box-shadow: 0 0 26px rgba(46, 232, 218, 0.24);
+}
+
+.festive-chip--nameday .festive-chip-tag.is-today-tag {
+  background: rgba(46, 232, 218, 0.24);
+  border-color: rgba(46, 232, 218, 0.65);
+  color: #ccfbf7;
+}
+
+.festive-chip--nameday.is-clickable:hover {
+  border-color: rgba(46, 232, 218, 0.75);
+  box-shadow: 0 8px 22px rgba(46, 232, 218, 0.22);
+}
+
+.festive-chip--reunion {
+  grid-column: 1 / -1;
+  border-color: rgba(46, 232, 218, 0.28);
+  background: linear-gradient(90deg, rgba(46, 232, 218, 0.1), rgba(251, 191, 36, 0.08), rgba(4, 18, 27, 0.56));
+}
+
+.festive-chip--reunion .festive-chip-icon {
+  background: rgba(46, 232, 218, 0.14);
+  border-color: rgba(46, 232, 218, 0.34);
+  color: var(--aurora-green);
+}
+
+.festive-chip-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.festive-chip-date {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.festive-chip-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.festive-chip-tag {
+  margin-left: auto;
+  flex: none;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(46, 232, 218, 0.14);
+  border: 1px solid rgba(46, 232, 218, 0.34);
+  color: #ccfbf7;
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.festive-chip-tag.is-today-tag {
+  background: rgba(251, 191, 36, 0.22);
+  border-color: rgba(251, 191, 36, 0.55);
+  color: #fef3c7;
+}
+
+.festive-chip--anniversary .festive-chip-tag.is-today-tag {
+  background: rgba(244, 114, 182, 0.26);
+  border-color: rgba(244, 114, 182, 0.65);
+  color: #fce7f3;
+}
+
+.festive-chip.is-reached {
+  opacity: 0.76;
+  border-color: rgba(46, 232, 218, 0.22);
+}
+
+.festive-chip.is-reached .festive-chip-icon {
+  background: rgba(46, 232, 218, 0.16);
+  border-color: rgba(46, 232, 218, 0.36);
+  color: var(--aurora-green);
+}
+
+.festive-chip.is-today {
+  border-color: rgba(251, 191, 36, 0.58);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.16), rgba(7, 25, 36, 0.72));
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.16);
+}
+
+.festive-chip--anniversary.is-today {
+  border-color: rgba(244, 114, 182, 0.68);
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.22), rgba(7, 25, 36, 0.74));
+  box-shadow: 0 0 26px rgba(244, 114, 182, 0.24);
+}
+
+.festive-chip.is-next {
+  border-color: rgba(46, 232, 218, 0.36);
+}
+
+.festive-chip.is-clickable {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.festive-chip.is-clickable:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 114, 182, 0.72);
+  box-shadow: 0 8px 22px rgba(244, 114, 182, 0.2);
+}
+
+/* =========================================================
+   Two Worlds Under One Sky (Oulu vs. Brno)
+   ========================================================= */
+.two-worlds-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.two-worlds-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.distance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: rgba(6, 22, 32, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.distance-pill strong {
+  color: var(--aurora-green);
+  font-variant-numeric: tabular-nums;
+}
+
+.distance-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--aurora-teal);
+  box-shadow: 0 0 10px var(--aurora-teal);
+}
+
+.two-worlds-card {
+  padding: 24px 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.worlds-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.world-panel {
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  background: rgba(4, 18, 27, 0.56);
+  border: 1px solid rgba(64, 224, 208, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.world-panel-oulu {
+  background: linear-gradient(155deg, rgba(14, 58, 72, 0.42), rgba(4, 18, 27, 0.62));
+  border-color: rgba(46, 232, 218, 0.24);
+}
+
+.world-panel-home {
+  background: linear-gradient(155deg, rgba(251, 191, 36, 0.08), rgba(4, 18, 27, 0.62));
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+.world-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.world-city {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.world-sub {
+  margin: 2px 0 0;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.world-clock {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.world-weather {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.weather-glyph {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.55rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: none;
+}
+
+.weather-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.weather-temp {
+  font-size: clamp(1.55rem, 3vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+}
+
+.weather-desc {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.weather-feels {
+  margin-left: auto;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.world-daylight {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(164, 214, 255, 0.1);
+}
+
+.daylight-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+.daylight-label {
+  color: var(--text-muted);
+}
+
+.daylight-val {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.daylight-bar-track {
+  position: relative;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(148, 179, 219, 0.14);
+  overflow: hidden;
+}
+
+.daylight-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--radius-pill);
+  transition: left 0.5s ease, width 0.5s ease;
+}
+
+.daylight-bar-oulu {
+  background: linear-gradient(90deg, #38bdf8, #2ee8da, #fde68a);
+  box-shadow: 0 0 12px rgba(46, 232, 218, 0.5);
+}
+
+.daylight-bar-home {
+  background: linear-gradient(90deg, #f59e0b, #fde68a, #fb923c);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.45);
+}
+
+.sun-times {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.worlds-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.bridge-line {
+  width: 1px;
+  flex: 1;
+  min-height: 24px;
+  background: linear-gradient(to bottom, transparent, rgba(46, 232, 218, 0.45), transparent);
+}
+
+.bridge-star {
+  color: var(--aurora-green);
+  font-size: 0.95rem;
+  text-shadow: 0 0 14px rgba(46, 232, 218, 0.8);
+}
+
+.daylight-compare {
+  margin: 0;
+  text-align: center;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+/* Live Aurora Kp-index Strip */
+.aurora-live-strip {
+  padding: 14px 18px;
+  border-radius: var(--radius-lg);
+  background: rgba(4, 18, 27, 0.62);
+  border: 1px solid rgba(46, 232, 218, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.aurora-live-strip[data-level='active'],
+.aurora-live-strip[data-level='storm'] {
+  border-color: rgba(46, 232, 218, 0.58);
+  background: linear-gradient(135deg, rgba(20, 208, 208, 0.16), rgba(4, 18, 27, 0.74));
+  box-shadow: 0 0 28px rgba(46, 232, 218, 0.16);
+}
+
+.aurora-strip-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aurora-strip-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.aurora-live-strip[data-level='mild'] .aurora-strip-dot {
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.75);
+}
+
+.aurora-live-strip[data-level='active'] .aurora-strip-dot,
+.aurora-live-strip[data-level='storm'] .aurora-strip-dot {
+  background: var(--aurora-green);
+  box-shadow: 0 0 14px var(--aurora-green);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+.aurora-strip-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.aurora-kp-badge {
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--aurora-green);
+}
+
+.aurora-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kp-seg {
+  width: 10px;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(148, 179, 219, 0.16);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kp-seg.is-lit:nth-child(-n + 2) {
+  background: #38bdf8;
+}
+
+.kp-seg.is-lit:nth-child(n + 3):nth-child(-n + 4) {
+  background: #2ee8da;
+  box-shadow: 0 0 8px rgba(46, 232, 218, 0.55);
+}
+
+.kp-seg.is-lit:nth-child(n + 5):nth-child(-n + 6) {
+  background: #fbbf24;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.55);
+}
+
+.kp-seg.is-lit:nth-child(n + 7) {
+  background: #f472b6;
+  box-shadow: 0 0 10px rgba(244, 114, 182, 0.65);
+}
+
+.aurora-status-text {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
 }
 
 /* =========================================================
@@ -1628,6 +2574,53 @@ body.reunion-live .target-meta {
     grid-template-columns: 1fr;
   }
 
+  .festive-milestones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .anniversary-card,
+  .nameday-card {
+    padding: 24px 18px;
+  }
+
+  .anniversary-letter-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .anniversary-photo-wrap {
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .two-worlds-card {
+    padding: 18px 16px;
+  }
+
+  .worlds-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .worlds-bridge {
+    flex-direction: row;
+    padding: 0 10px;
+  }
+
+  .bridge-line {
+    height: 1px;
+    width: auto;
+    min-height: 0;
+    background: linear-gradient(to right, transparent, rgba(46, 232, 218, 0.45), transparent);
+  }
+
+  .aurora-live-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
   .lightbox-shell {
     padding: 44px 8px 8px;
   }
@@ -1647,17 +2640,36 @@ body.reunion-live .target-meta {
   }
 }
 
+@media (max-width: 520px) {
+  .festive-milestones {
+    grid-template-columns: 1fr;
+  }
+
+  .special-day-banner {
+    padding: 15px 16px;
+    align-items: flex-start;
+  }
+
+  .weather-feels {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   .aurora,
   .pulse-dot,
-  .time-value.tick-pop {
+  .time-value.tick-pop,
+  .anniversary-seal,
+  .anniversary-letter,
+  .aurora-strip-dot {
     animation: none !important;
   }
 
   .slide-image,
   .journey-fill,
-  .journey-marker {
+  .journey-marker,
+  .daylight-bar-fill {
     transition: none !important;
   }
 }
