@@ -475,6 +475,10 @@ body.gate-open {
   overflow: hidden;
 }
 
+html.gate-skip .welcome-gate {
+  display: none !important;
+}
+
 .welcome-gate {
   position: fixed;
   inset: 0;

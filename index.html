@@ -18,6 +18,17 @@
   <script defer src="app.js"></script>
 </head>
 <body class="gate-open">
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('gate') !== '1' && window.localStorage.getItem('reunion-welcome-choice')) {
+          document.body.classList.remove('gate-open');
+          document.documentElement.classList.add('gate-skip');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <!-- Atmospheric Nordic Aurora & Snow Background -->
   <div class="sky-backdrop" aria-hidden="true">
     <div class="aurora aurora-1"></div>

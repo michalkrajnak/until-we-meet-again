@@ -1865,9 +1865,50 @@
     }, 1400);
   }
 
-  function startMusicPlayback() {
+  const WELCOME_CHOICE_KEY = 'reunion-welcome-choice';
+  const forceShowGate = urlParams.get('gate') === '1';
+
+  function readWelcomeChoice() {
+    if (forceShowGate) return null;
+    try {
+      const val = window.localStorage.getItem(WELCOME_CHOICE_KEY);
+      return val === 'music' || val === 'silent' ? val : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveWelcomeChoice(choice) {
+    try {
+      window.localStorage.setItem(WELCOME_CHOICE_KEY, choice);
+    } catch {
+      // ignore storage restrictions
+    }
+  }
+
+  let pendingFirstGestureUnlock = false;
+
+  function armFirstGestureMusicUnlock() {
+    if (pendingFirstGestureUnlock) return;
+    pendingFirstGestureUnlock = true;
+
+    const unlock = () => {
+      pendingFirstGestureUnlock = false;
+      window.removeEventListener('pointerdown', unlock, true);
+      window.removeEventListener('keydown', unlock, true);
+      if (musicWanted && !musicPlaying && !musicDucked) {
+        startMusicPlayback({ revealFallback: true, persist: false });
+      }
+    };
+
+    window.addEventListener('pointerdown', unlock, { capture: true, passive: true });
+    window.addEventListener('keydown', unlock, { capture: true });
+  }
+
+  function startMusicPlayback({ revealFallback = true, persist = true } = {}) {
     musicWanted = true;
     userManuallyPausedMusic = false;
+    if (persist) saveWelcomeChoice('music');
     updateMusicUI();
 
     const targetVol = musicCfg.volume ?? 55;
@@ -1886,6 +1927,7 @@
           }).catch(() => {
             musicPlaying = false;
             updateMusicUI();
+            if (!revealFallback) armFirstGestureMusicUnlock();
           });
         } else {
           musicPlaying = true;
@@ -1900,7 +1942,11 @@
     }
 
     // 2. YouTube IFrame Player fallback
-    scheduleYtFallbackReveal();
+    if (revealFallback) {
+      scheduleYtFallbackReveal();
+    } else {
+      armFirstGestureMusicUnlock();
+    }
     if (!ytPlayer || !ytReady) return;
     try {
       ytPlayer.unMute();
@@ -1914,7 +1960,7 @@
         fadeVolumeTo(targetVol);
       }
     } catch {
-      setYtFallbackVisible(true);
+      if (revealFallback) setYtFallbackVisible(true);
     }
   }
 
@@ -1922,6 +1968,7 @@
     if (manual) {
       musicWanted = false;
       userManuallyPausedMusic = true;
+      saveWelcomeChoice('silent');
     }
     musicPlaying = false;
     clearYtRevealTimer();
@@ -1992,8 +2039,9 @@
   }
 
   function closeWelcomeGate({ withMusic = false } = {}) {
+    saveWelcomeChoice(withMusic ? 'music' : 'silent');
     if (withMusic) {
-      startMusicPlayback();
+      startMusicPlayback({ revealFallback: true, persist: false });
     } else {
       userManuallyPausedMusic = true;
     }
@@ -2008,6 +2056,18 @@
 
   function initWelcomeGate() {
     if (!el.welcomeGate) return;
+
+    const savedChoice = readWelcomeChoice();
+    if (savedChoice) {
+      el.welcomeGate.hidden = true;
+      document.body.classList.remove('gate-open');
+      if (savedChoice === 'music') {
+        startMusicPlayback({ revealFallback: false, persist: false });
+      } else {
+        userManuallyPausedMusic = true;
+      }
+      return;
+    }
 
     if (el.welcomeEnterMusic) {
       el.welcomeEnterMusic.addEventListener('click', () => {
@@ -2108,7 +2168,7 @@
           onReady: () => {
             ytReady = true;
             if (musicWanted && !musicDucked) {
-              startMusicPlayback();
+              startMusicPlayback({ revealFallback: !pendingFirstGestureUnlock, persist: false });
             }
           },
           onStateChange: (event) => {
@@ -2162,8 +2222,8 @@
   renderThumbs();
   showSlide(0, { immediate: true });
   initSkyParticles();
-  initWelcomeGate();
   initBackgroundMusic();
+  initWelcomeGate();
   applyLanguage(currentLang);
   initTwoWorlds();
   applyMotionState();
