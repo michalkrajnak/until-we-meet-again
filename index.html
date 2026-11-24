@@ -240,8 +240,9 @@
           >
             <div id="progress-fill" class="journey-fill" style="width: 0%"></div>
             <div id="progress-marker" class="journey-marker" style="left: 0%" aria-hidden="true">
-              <span class="marker-glow"></span>
-              <span class="marker-icon">✈</span>
+              <svg class="marker-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" transform="rotate(90 12 12)" />
+              </svg>
             </div>
           </div>
           <div id="progress-milestones" class="journey-milestones" aria-hidden="true"></div>
@@ -464,8 +465,14 @@
     <p id="footer-text">S láskou vytvořil Mišák pro Simču · Pod stejným zimním nebem ✦</p>
   </footer>
 
-  <!-- Hidden YouTube Background Audio Host -->
-  <div id="yt-music-host" class="yt-music-host" aria-hidden="true"></div>
+  <!-- Background Audio Host (native <audio> or YouTube IFrame fallback) -->
+  <div id="yt-music-wrap" class="yt-music-wrap">
+    <div class="yt-music-bar">
+      <span id="yt-music-hint" class="yt-music-hint">Klepni ▶ pro spuštění hudby</span>
+      <button id="yt-music-dismiss" class="yt-music-dismiss" type="button" aria-label="Zavřít přehrávač">✕</button>
+    </div>
+    <div id="yt-music-host" class="yt-music-host"></div>
+  </div>
 
   <!-- Native Fullscreen Photo Lightbox -->
   <dialog id="lightbox-dialog" class="lightbox-dialog" aria-label="Prohlížeč fotek">

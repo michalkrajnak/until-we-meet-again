@@ -145,8 +145,12 @@ window.REUNION_CONFIG = {
     shuffleOnLoad: true,
   },
 
-  // Background music (official YouTube IFrame Player)
+  // Background music
+  // Tip: For 100% reliable 1-tap playback on iPhone/Safari without YouTube blocks,
+  // place an MP3/M4A file in media/music/ and set audioSrc: 'media/music/ordinary.mp3'.
+  // Otherwise, the YouTube IFrame Player fallback is used automatically.
   music: {
+    audioSrc: '',
     youtubeId: 'u2ah9tWTkmk', // Alex Warren - Ordinary (Official Video)
     title: 'Ordinary',
     artist: 'Alex Warren',
@@ -165,6 +169,7 @@ window.REUNION_CONFIG = {
       musicLabel: 'Hudba',
       musicPlayTitle: 'Přehrát hudbu',
       musicPauseTitle: 'Pozastavit hudbu',
+      musicTapHint: 'Klepni ▶ pro spuštění hudby',
       welcomeEyebrow: 'Oulu, Finsko 🇫🇮 → Doma na Vánoce 🎄',
       welcomeHeading: 'Pro Simču',
       welcomeText: 'Malý odpočet pod polární září, než se s Riou a Texasem vrátíš domů na Vánoce.',
@@ -380,6 +385,7 @@ window.REUNION_CONFIG = {
       musicLabel: 'Music',
       musicPlayTitle: 'Play music',
       musicPauseTitle: 'Pause music',
+      musicTapHint: 'Tap ▶ to start music',
       welcomeEyebrow: 'Oulu, Finland 🇫🇮 → Home for Christmas 🎄',
       welcomeHeading: 'For Simča',
       welcomeText: 'A little countdown under the northern lights until you, Ria & Texas are home for Christmas.',

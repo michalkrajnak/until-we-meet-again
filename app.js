@@ -166,6 +166,9 @@
     footerText: document.getElementById('footer-text'),
     musicToggle: document.getElementById('music-toggle'),
     musicLabel: document.getElementById('music-label'),
+    ytMusicWrap: document.getElementById('yt-music-wrap'),
+    ytMusicHint: document.getElementById('yt-music-hint'),
+    ytMusicDismiss: document.getElementById('yt-music-dismiss'),
     ytMusicHost: document.getElementById('yt-music-host'),
     welcomeGate: document.getElementById('welcome-gate'),
     welcomeEyebrow: document.getElementById('welcome-eyebrow'),
@@ -1740,9 +1743,12 @@
   });
 
   // =========================================================
-  // Background Music (Official YouTube IFrame Player API)
+  // Background Music (Native HTML5 Audio or YouTube IFrame Fallback)
   // =========================================================
   const musicCfg = config.music || {};
+  const isTouchDevice =
+    window.matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let htmlAudio = null;
   let ytPlayer = null;
   let ytReady = false;
   let musicWanted = false;
@@ -1750,6 +1756,12 @@
   let musicDucked = false;
   let userManuallyPausedMusic = false;
   let volumeFadeTimer = null;
+  let ytFallbackRevealTimer = null;
+
+  function setYtFallbackVisible(visible) {
+    if (!el.ytMusicWrap) return;
+    el.ytMusicWrap.classList.toggle('is-visible', visible);
+  }
 
   function updateMusicUI() {
     if (!el.musicToggle) return;
@@ -1761,13 +1773,54 @@
     if (el.musicLabel) {
       el.musicLabel.textContent = strings.musicLabel;
     }
+    if (el.ytMusicHint && strings.musicTapHint) {
+      el.ytMusicHint.textContent = strings.musicTapHint;
+    }
   }
 
   function fadeVolumeTo(targetVol) {
-    if (!ytPlayer || !ytReady) return;
     if (volumeFadeTimer !== null) {
       window.clearInterval(volumeFadeTimer);
       volumeFadeTimer = null;
+    }
+
+    if (htmlAudio) {
+      const targetRatio = Math.max(0, Math.min(1, targetVol / 100));
+      if (isTouchDevice) {
+        try {
+          htmlAudio.volume = targetRatio;
+        } catch {
+          // iOS controls volume via hardware buttons
+        }
+        return;
+      }
+      const startVol = htmlAudio.volume;
+      const steps = 14;
+      let step = 0;
+      const delta = (targetRatio - startVol) / steps;
+      volumeFadeTimer = window.setInterval(() => {
+        step += 1;
+        try {
+          htmlAudio.volume = step >= steps ? targetRatio : Math.max(0, Math.min(1, startVol + delta * step));
+        } catch {
+          // ignore
+        }
+        if (step >= steps) {
+          window.clearInterval(volumeFadeTimer);
+          volumeFadeTimer = null;
+        }
+      }, 80);
+      return;
+    }
+
+    if (!ytPlayer || !ytReady) return;
+    if (isTouchDevice) {
+      try {
+        ytPlayer.setVolume(Math.max(0, Math.min(100, targetVol)));
+      } catch {
+        // ignore
+      }
+      return;
     }
 
     let currentVol = 0;
@@ -1795,19 +1848,73 @@
     }, 85);
   }
 
+  function clearYtRevealTimer() {
+    if (ytFallbackRevealTimer !== null) {
+      window.clearTimeout(ytFallbackRevealTimer);
+      ytFallbackRevealTimer = null;
+    }
+  }
+
+  function scheduleYtFallbackReveal() {
+    clearYtRevealTimer();
+    ytFallbackRevealTimer = window.setTimeout(() => {
+      ytFallbackRevealTimer = null;
+      if (musicWanted && !musicPlaying && !musicDucked && !htmlAudio) {
+        setYtFallbackVisible(true);
+      }
+    }, 1400);
+  }
+
   function startMusicPlayback() {
     musicWanted = true;
     userManuallyPausedMusic = false;
     updateMusicUI();
 
+    const targetVol = musicCfg.volume ?? 55;
+
+    // 1. Native HTML5 <audio> (100% reliable 1-tap playback on iPhone/Safari/Android/Desktop)
+    if (htmlAudio) {
+      try {
+        htmlAudio.muted = false;
+        htmlAudio.volume = isTouchDevice ? Math.max(0, Math.min(1, targetVol / 100)) : 0;
+        const p = htmlAudio.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => {
+            musicPlaying = true;
+            updateMusicUI();
+            fadeVolumeTo(targetVol);
+          }).catch(() => {
+            musicPlaying = false;
+            updateMusicUI();
+          });
+        } else {
+          musicPlaying = true;
+          updateMusicUI();
+          fadeVolumeTo(targetVol);
+        }
+      } catch {
+        musicPlaying = false;
+        updateMusicUI();
+      }
+      return;
+    }
+
+    // 2. YouTube IFrame Player fallback
+    scheduleYtFallbackReveal();
     if (!ytPlayer || !ytReady) return;
     try {
       ytPlayer.unMute();
-      ytPlayer.setVolume(0);
+      if (isTouchDevice) {
+        ytPlayer.setVolume(targetVol);
+      } else {
+        ytPlayer.setVolume(0);
+      }
       ytPlayer.playVideo();
-      fadeVolumeTo(musicCfg.volume ?? 55);
+      if (!isTouchDevice) {
+        fadeVolumeTo(targetVol);
+      }
     } catch {
-      // ignore autoplay rejections until next user tap
+      setYtFallbackVisible(true);
     }
   }
 
@@ -1817,11 +1924,19 @@
       userManuallyPausedMusic = true;
     }
     musicPlaying = false;
+    clearYtRevealTimer();
+    setYtFallbackVisible(false);
     if (volumeFadeTimer !== null) {
       window.clearInterval(volumeFadeTimer);
       volumeFadeTimer = null;
     }
-    if (ytPlayer && ytReady) {
+    if (htmlAudio) {
+      try {
+        htmlAudio.pause();
+      } catch {
+        // ignore
+      }
+    } else if (ytPlayer && ytReady) {
       try {
         ytPlayer.pauseVideo();
       } catch {
@@ -1842,7 +1957,13 @@
     if (galleryVideoWithSound) {
       if (musicWanted && !musicDucked) {
         musicDucked = true;
-        if (ytPlayer && ytReady) {
+        if (htmlAudio) {
+          try {
+            htmlAudio.pause();
+          } catch {
+            // ignore
+          }
+        } else if (ytPlayer && ytReady) {
           try {
             ytPlayer.pauseVideo();
           } catch {
@@ -1853,12 +1974,17 @@
       }
     } else if (musicDucked) {
       musicDucked = false;
-      if (musicWanted && ytPlayer && ytReady) {
-        try {
-          ytPlayer.playVideo();
+      if (musicWanted) {
+        if (htmlAudio) {
+          htmlAudio.play().catch(() => { });
           fadeVolumeTo(musicCfg.volume ?? 55);
-        } catch {
-          // ignore
+        } else if (ytPlayer && ytReady) {
+          try {
+            ytPlayer.playVideo();
+            fadeVolumeTo(musicCfg.volume ?? 55);
+          } catch {
+            // ignore
+          }
         }
       }
       updateMusicUI();
@@ -1903,25 +2029,64 @@
   }
 
   function initBackgroundMusic() {
-    if (!musicCfg.youtubeId || !el.ytMusicHost || !el.musicToggle) {
+    const hasAudioFile = Boolean(musicCfg.audioSrc);
+    const hasYouTube = Boolean(musicCfg.youtubeId && el.ytMusicHost);
+
+    if ((!hasAudioFile && !hasYouTube) || !el.musicToggle) {
       if (el.musicToggle) el.musicToggle.hidden = true;
+      if (el.ytMusicWrap) el.ytMusicWrap.hidden = true;
       return;
     }
 
     el.musicToggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (musicWanted) {
+      if (musicWanted && musicPlaying) {
         pauseMusicPlayback({ manual: true });
+      } else if (musicWanted && !musicPlaying && !htmlAudio) {
+        // Retry playback & reveal mini-player if mobile browser blocked hidden iframe
+        startMusicPlayback();
+        setYtFallbackVisible(true);
       } else {
         startMusicPlayback();
       }
     });
 
+    if (el.ytMusicDismiss) {
+      el.ytMusicDismiss.addEventListener('click', () => {
+        setYtFallbackVisible(false);
+        if (!musicPlaying) {
+          musicWanted = false;
+          updateMusicUI();
+        }
+      });
+    }
+
+    if (hasAudioFile) {
+      if (el.ytMusicWrap) el.ytMusicWrap.hidden = true;
+      htmlAudio = new Audio(musicCfg.audioSrc);
+      htmlAudio.loop = true;
+      htmlAudio.preload = 'auto';
+      htmlAudio.playsInline = true;
+      htmlAudio.addEventListener('playing', () => {
+        musicPlaying = true;
+        updateMusicUI();
+      });
+      htmlAudio.addEventListener('pause', () => {
+        musicPlaying = false;
+        updateMusicUI();
+      });
+      htmlAudio.addEventListener('error', () => {
+        musicPlaying = false;
+        updateMusicUI();
+      });
+      return;
+    }
+
     const createPlayer = () => {
       if (ytPlayer || !window.YT || !window.YT.Player) return;
       const playerVars = {
         autoplay: 0,
-        controls: 0,
+        controls: 1,
         disablekb: 1,
         fs: 0,
         loop: 1,
@@ -1935,8 +2100,8 @@
       }
 
       ytPlayer = new window.YT.Player('yt-music-host', {
-        height: '200',
-        width: '200',
+        height: '135',
+        width: '240',
         videoId: musicCfg.youtubeId,
         playerVars,
         events: {
@@ -1950,6 +2115,9 @@
             if (!window.YT || !window.YT.PlayerState) return;
             if (event.data === window.YT.PlayerState.PLAYING) {
               musicPlaying = true;
+              musicWanted = true;
+              clearYtRevealTimer();
+              setYtFallbackVisible(false);
               updateMusicUI();
             } else if (event.data === window.YT.PlayerState.PAUSED) {
               musicPlaying = false;
@@ -1965,6 +2133,7 @@
           },
           onError: () => {
             musicPlaying = false;
+            clearYtRevealTimer();
             updateMusicUI();
           },
         },
