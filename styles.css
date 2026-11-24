@@ -377,6 +377,15 @@ body.motion-paused .icon-pill .motion-icon {
   box-shadow: 0 0 18px rgba(46, 232, 218, 0.18);
 }
 
+.music-pill.is-waiting {
+  border-color: rgba(46, 232, 218, 0.42);
+  color: #d7fbf8;
+}
+
+.music-pill.is-waiting .eq-bar {
+  background: var(--aurora-teal);
+}
+
 .music-pill.is-playing .eq-bar {
   background: var(--aurora-green);
   animation: eqBounce 0.9s ease-in-out infinite alternate;

@@ -1767,9 +1767,11 @@
     if (!el.musicToggle) return;
     const strings = t();
     const active = musicPlaying && !musicDucked;
+    const waiting = musicWanted && !musicPlaying && !musicDucked;
     el.musicToggle.classList.toggle('is-playing', active);
+    el.musicToggle.classList.toggle('is-waiting', waiting);
     el.musicToggle.setAttribute('aria-pressed', String(musicWanted));
-    el.musicToggle.title = musicWanted ? strings.musicPauseTitle : strings.musicPlayTitle;
+    el.musicToggle.title = active ? strings.musicPauseTitle : strings.musicPlayTitle;
     if (el.musicLabel) {
       el.musicLabel.textContent = strings.musicLabel;
     }
@@ -1886,25 +1888,6 @@
     }
   }
 
-  let pendingFirstGestureUnlock = false;
-
-  function armFirstGestureMusicUnlock() {
-    if (pendingFirstGestureUnlock) return;
-    pendingFirstGestureUnlock = true;
-
-    const unlock = () => {
-      pendingFirstGestureUnlock = false;
-      window.removeEventListener('pointerdown', unlock, true);
-      window.removeEventListener('keydown', unlock, true);
-      if (musicWanted && !musicPlaying && !musicDucked) {
-        startMusicPlayback({ revealFallback: true, persist: false });
-      }
-    };
-
-    window.addEventListener('pointerdown', unlock, { capture: true, passive: true });
-    window.addEventListener('keydown', unlock, { capture: true });
-  }
-
   function startMusicPlayback({ revealFallback = true, persist = true } = {}) {
     musicWanted = true;
     userManuallyPausedMusic = false;
@@ -1927,7 +1910,6 @@
           }).catch(() => {
             musicPlaying = false;
             updateMusicUI();
-            if (!revealFallback) armFirstGestureMusicUnlock();
           });
         } else {
           musicPlaying = true;
@@ -1944,8 +1926,6 @@
     // 2. YouTube IFrame Player fallback
     if (revealFallback) {
       scheduleYtFallbackReveal();
-    } else {
-      armFirstGestureMusicUnlock();
     }
     if (!ytPlayer || !ytReady) return;
     try {
@@ -2057,15 +2037,12 @@
   function initWelcomeGate() {
     if (!el.welcomeGate) return;
 
-    const savedChoice = readWelcomeChoice();
-    if (savedChoice) {
+    // Only skip the welcome gate if the user previously chose silent mode;
+    // users who want music still need a click gesture per browser autoplay policy.
+    if (readWelcomeChoice() === 'silent') {
       el.welcomeGate.hidden = true;
       document.body.classList.remove('gate-open');
-      if (savedChoice === 'music') {
-        startMusicPlayback({ revealFallback: false, persist: false });
-      } else {
-        userManuallyPausedMusic = true;
-      }
+      userManuallyPausedMusic = true;
       return;
     }
 
@@ -2103,11 +2080,10 @@
       if (musicWanted && musicPlaying) {
         pauseMusicPlayback({ manual: true });
       } else if (musicWanted && !musicPlaying && !htmlAudio) {
-        // Retry playback & reveal mini-player if mobile browser blocked hidden iframe
-        startMusicPlayback();
-        setYtFallbackVisible(true);
+        startMusicPlayback({ revealFallback: true, persist: true });
+        if (isTouchDevice) setYtFallbackVisible(true);
       } else {
-        startMusicPlayback();
+        startMusicPlayback({ revealFallback: true, persist: true });
       }
     });
 
@@ -2168,7 +2144,7 @@
           onReady: () => {
             ytReady = true;
             if (musicWanted && !musicDucked) {
-              startMusicPlayback({ revealFallback: !pendingFirstGestureUnlock, persist: false });
+              startMusicPlayback({ revealFallback: true, persist: false });
             }
           },
           onStateChange: (event) => {
